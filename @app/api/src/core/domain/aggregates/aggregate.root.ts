@@ -13,7 +13,7 @@ export abstract class AggregateRoot<
         return temp
     }
 
-    protected apply(event: DomainEvent) {
+    protected publish(event: DomainEvent) {
         this.validateState()
         this.events.push(event)
     }
