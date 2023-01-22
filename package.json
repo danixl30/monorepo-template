@@ -9,7 +9,7 @@
     "start": "pnpm --recursive --parallel --stream run start",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "commit": "sui-mono commit",
-    "format": "prettier --write \"**/**/src/**/*.ts\" \"**/**/src/**/*.tsx\" \"**/**/test/**/*.ts\""
+    "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\""
   },
   "keywords": [],
   "author": "",
