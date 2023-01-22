@@ -10,8 +10,8 @@ export default async function bootstrap() {
         .setGlobalProfix('api')
         .setValidationPipe()
         .setDocumentation({
-            title: 'Rabbit Buy Docs',
-            description: 'Rabbit Buy API Documentation',
+            title: 'API Docs',
+            description: 'API Documentation',
             version: '1.0',
             path: 'api/docs',
         })
