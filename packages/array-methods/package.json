@@ -1,15 +1,15 @@
 {
   "name": "@mono/array-methods",
   "private": true,
-  "types": "./common/index.d.ts",
+  "types": "./commonjs/index.d.ts",
   "exports": {
       ".": {
-          "require": "./common/index.js",
-          "default": "./es/index.js"
+          "require": "./commonjs/index.js",
+          "default": "./esm/index.js"
       }
   },
-  "module": "./es/index.js",
-  "main": "./common/index.js",
+  "module": "./esm/index.js",
+  "main": "./commonjs/index.js",
   "scripts": {
       "build": "tsc --project tsconfig_common.json && tsc --project tsconfig_es.json",
       "start:dev": "tsc -w --project tsconfig_common.json && tsc -w --project tsconfig_es.json"

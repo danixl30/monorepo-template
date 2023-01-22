@@ -5,9 +5,9 @@
         "lib": ["dom", "ESNext"],
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "./es",
+        "outDir": "./esm",
         "baseUrl": "./lib"
     },
     "include": ["lib"],
-    "exclude": ["./es/**/*"]
+    "exclude": ["./esm/**/*"]
 }

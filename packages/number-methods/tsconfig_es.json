@@ -4,9 +4,9 @@
         "module": "ESNext",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "sourceMap": true,
-        "outDir": "./es",
+        "outDir": "./esm",
         "baseUrl": "./lib"
     },
     "include": ["lib"],
-    "exclude": ["./es/**"]
+    "exclude": ["./esm/**"]
 }
