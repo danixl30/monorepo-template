@@ -1,0 +1,17 @@
+{
+  "name": "@mono/eslint-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "files": [
+      "index.js"
+  ],
+  "exports": {
+      ".": {
+          "require": "./index.js"
+      }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

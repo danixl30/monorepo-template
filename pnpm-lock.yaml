@@ -25,6 +25,7 @@ importers:
   '@app/api':
     specifiers:
       '@mono/array-methods': workspace:*
+      '@mono/eslint-config': workspace:^1.0.0
       '@mono/number-methods': workspace:*
       '@mono/object-utils': workspace:^0.0.1
       '@mono/string-methods': workspace:*
@@ -77,6 +78,7 @@ importers:
       rxjs: 7.8.0
       uuid: 9.0.0
     devDependencies:
+      '@mono/eslint-config': link:../../packages/eslint-config
       '@nestjs/cli': 9.1.8
       '@nestjs/schematics': 9.0.4
       '@nestjs/testing': 9.2.1_wdbvfsxfdwzlwdfiyh2gynjl4m
