@@ -1,5 +1,5 @@
-import { Entity } from '../entity/entity'
 import { DomainEvent } from '../events/event'
+import { Entity } from '../entity/entity'
 import { ValueObject } from '../value-objects/value.object'
 
 export abstract class AggregateRoot<

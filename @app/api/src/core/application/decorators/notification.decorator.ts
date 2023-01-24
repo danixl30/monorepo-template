@@ -1,6 +1,6 @@
-import { ValueObject } from 'src/core/domain/value-objects/value.object'
-import { NotificationHandler } from '../notifications/handler/notification.handler'
 import { ApplicationService } from '../service/application.service'
+import { NotificationHandler } from '../notifications/handler/notification.handler'
+import { ValueObject } from 'src/core/domain/value-objects/value.object'
 
 export class NotificationDecorator<
     T,

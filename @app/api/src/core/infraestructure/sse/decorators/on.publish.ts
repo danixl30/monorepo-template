@@ -1,5 +1,5 @@
-import { jsonToString } from '@mono/object-utils'
 import { ExecutionContext, createParamDecorator } from '@nestjs/common'
+import { jsonToString } from '@mono/object-utils'
 
 export const OnPublish = createParamDecorator(
     (_: unknown, context: ExecutionContext) => {

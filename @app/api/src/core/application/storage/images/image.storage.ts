@@ -1,6 +1,6 @@
 import { DeleteImageOptions } from './types/delete.options'
-import { SaveImageOptions } from './types/save.options'
 import { ImageSaved } from './types/saved'
+import { SaveImageOptions } from './types/save.options'
 
 export interface ImageStorage {
     save(options: SaveImageOptions): Promise<ImageSaved>

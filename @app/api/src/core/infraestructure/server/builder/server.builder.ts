@@ -1,9 +1,9 @@
-import { Builder } from 'src/utils/builder/builder'
-import { INestApplication, ValidationPipe } from '@nestjs/common'
-import { createServer } from '../create-server/create.server'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { Builder } from 'src/utils/builder/builder'
 import { DocumentationProps } from './types/documentation.props'
 import { TypeClass } from '@mono/types-utils'
+import { createServer } from '../create-server/create.server'
 
 export class ServerBuilder implements Builder<INestApplication> {
     private constructor(private app: INestApplication) {}

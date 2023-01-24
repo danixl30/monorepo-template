@@ -1,5 +1,5 @@
-import { Subscription } from './subscription'
 import { DomainEvent } from 'src/core/domain/events/event'
+import { Subscription } from './subscription'
 
 export interface EventHandler {
     publish(events: DomainEvent[]): void

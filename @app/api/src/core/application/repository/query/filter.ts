@@ -1,7 +1,7 @@
-import { ValueObject } from 'src/core/domain/value-objects/value.object'
 import { FieldName } from './field.name'
 import { FieldValue } from './field.value'
 import { FilterOperator } from './filter.operator'
+import { ValueObject } from 'src/core/domain/value-objects/value.object'
 
 export class Filter implements ValueObject<Filter> {
     constructor(

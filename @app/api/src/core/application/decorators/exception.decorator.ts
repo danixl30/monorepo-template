@@ -1,5 +1,5 @@
-import { ExceptionReductor } from '../exception-reductor/exception.reductor'
 import { ApplicationService } from '../service/application.service'
+import { ExceptionReductor } from '../exception-reductor/exception.reductor'
 
 export class ExceptionDecorator<T, U> implements ApplicationService<T, U> {
     constructor(
