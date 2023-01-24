@@ -2,9 +2,9 @@
 
 ## Description
 
-Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [PNPm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0.
+Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [PNpm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0.
 
-## PNPm installation 
+## PNpm installation 
 ```bash
 # enable corepack
 $ corepack enable
@@ -61,7 +61,7 @@ $ pnpm run test:cov
 
 - Nest is [MIT licensed](LICENSE).
 - [React](https://github.com/facebook/react/)
-- [PNPm](https://github.com/pnpm/pnpm)
+- [PNpm](https://github.com/pnpm/pnpm)
 
 
 
@@ -74,6 +74,6 @@ $ pnpm run test:cov
 
 ![React](https://logos-download.com/wp-content/uploads/2016/09/React_logo_wordmark.png)
 
-![PNPm](https://d33wubrfki0l68.cloudfront.net/aad219b6c931cebb53121dcda794f6180d9e4397/c405b/es/assets/images/pnpm-standard-79c9dbb2e99b8525ae55174580061e1b.svg)
+![PNpm](https://d33wubrfki0l68.cloudfront.net/aad219b6c931cebb53121dcda794f6180d9e4397/c405b/es/assets/images/pnpm-standard-79c9dbb2e99b8525ae55174580061e1b.svg)
 
 ![TypeScript](https://blog.marksauerutley.com/static/d0050d0772fd9db5ec35f7b69a66b609/6af66/tslogo.png)
