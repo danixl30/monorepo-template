@@ -1,8 +1,7 @@
 {
   "name": "monorepo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Monorepo template with pnpm, typescript, nest and react",
   "scripts": {
     "start:dev": "pnpm --recursive --parallel --stream run start:dev",
     "build": "pnpm --recursive --parallel --stream run build",
@@ -13,7 +12,7 @@
     "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\""
   },
   "keywords": [],
-  "author": "",
+  "author": "danixl30",
   "license": "ISC",
   "devDependencies": {
     "@s-ui/mono": "^2.34.0",
