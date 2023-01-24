@@ -8,7 +8,7 @@
     "build": "pnpm --recursive --parallel --stream run build",
     "start": "pnpm --recursive --parallel --stream run start",
     "start:prod": "pnpm --recursive --parallel --stream run start:prod",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "pnpm --recursive --parallel --stream run lint",
     "commit": "sui-mono commit",
     "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\""
   },

@@ -6,11 +6,6 @@
   "files": [
       "index.js"
   ],
-  "exports": {
-      ".": {
-          "require": "./index.js"
-      }
-  },
   "keywords": [],
   "author": "",
   "license": "ISC"

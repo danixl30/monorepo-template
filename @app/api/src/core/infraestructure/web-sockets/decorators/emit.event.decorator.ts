@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common'
+import { ExecutionContext, createParamDecorator } from '@nestjs/common'
 
 export const EmitEvent = createParamDecorator(
     (_: unknown, context: ExecutionContext) => {

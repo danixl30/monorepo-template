@@ -1,16 +1,10 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
-  },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
-  root: true,
   env: {
     node: true,
     browser: true,
@@ -21,16 +15,21 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'on',
-    'camelcase': 'on',
-    'no-return-await': 'on',
-    'no-var': 'on',
-    'prefer-const': 'on',
-    'prefer-object-spread': 'on',
-      'prefer-regex-literals': 'on',
-      'sort-imports': 'on',
-      'semi': {
-          'never': true
-      }
+    '@typescript-eslint/no-explicit-any': 'off',
+    "@typescript-eslint/no-require-imports": "warn",
+    'camelcase': ['error', {
+      'properties': 'always'
+    }],
+    'no-return-await': ['error'],
+    'no-var': ['error'],
+    '@typescript-eslint/no-var-requires': 'off',
+    'prefer-const': ['error'],
+    'prefer-object-spread': ['error'],
+    'prefer-regex-literals': ['error'],
+    'sort-imports': ['warn'],
+    'semi': ['error', 'never'],
+    "consistent-return": 2,
+    "indent"           : [1, 4],
+    "no-else-return"   : 1,
   },
 };

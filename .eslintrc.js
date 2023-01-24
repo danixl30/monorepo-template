@@ -1,1 +1,1 @@
-module.exports = require("@mono/eslint-config")
+module.exports = require("./packages/eslint-config/index")
