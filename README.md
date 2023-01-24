@@ -2,9 +2,9 @@
 
 ## Description
 
-Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [PNpm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0.
+Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [pnpm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0.
 
-## PNpm installation 
+## pnpm installation 
 ```bash
 # enable corepack
 $ corepack enable
@@ -61,7 +61,7 @@ $ pnpm run test:cov
 
 - Nest is [MIT licensed](LICENSE).
 - [React](https://github.com/facebook/react/)
-- [PNpm](https://github.com/pnpm/pnpm)
+- [pnpm](https://github.com/pnpm/pnpm)
 
 
 
