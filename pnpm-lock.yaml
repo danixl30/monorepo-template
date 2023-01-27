@@ -13,7 +13,7 @@ importers:
       eslint-plugin-prettier: ^4.0.0
       graphviz: ^0.0.9
       prettier: ^2.3.2
-      typescript: ^4.7.4
+      typescript: ^4.9.4
     devDependencies:
       '@s-ui/mono': 2.34.0
       '@typescript-eslint/eslint-plugin': 5.48.2_caon6io6stgpr7lz2rtbhekxqy
@@ -123,6 +123,9 @@ importers:
       vite: 4.0.4
 
   packages/array-methods:
+    specifiers: {}
+
+  packages/eslint-config:
     specifiers: {}
 
   packages/number-methods:
