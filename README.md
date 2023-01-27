@@ -2,7 +2,7 @@
 
 ## Description
 
-Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [pnpm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0.
+Monorepo [TypeScript](https://www.typescriptlang.org/) starter with [Nest](https://github.com/nestjs/nest) and [React](https://reactjs.org/). The package manager is [pnpm](https://pnpm.io/). You need [NodeJs](https://nodejs.org/en/) >=18.12.0. For dependencies graph you need [Graphviz](https://graphviz.org/download/)
 
 ## pnpm installation 
 ```bash
