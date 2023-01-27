@@ -9,7 +9,8 @@
     "start:prod": "pnpm --recursive --parallel --stream run start:prod",
     "lint": "pnpm --recursive --parallel --stream run lint",
     "commit": "sui-mono commit",
-    "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\""
+    "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\"",
+    "dependencies-graph": "pnpm --recursive --parallel --stream run dependencies-graph"
   },
   "keywords": [],
   "author": "danixl30",
@@ -18,9 +19,11 @@
     "@s-ui/mono": "^2.34.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.0.0",
+    "dependency-cruiser": "^12.6.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "graphviz": "^0.0.9",
     "prettier": "^2.3.2",
     "typescript": "^4.7.4"
   }
