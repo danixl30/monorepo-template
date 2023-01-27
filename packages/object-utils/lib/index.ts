@@ -12,3 +12,5 @@ export const jsonParse = <T extends object>(data: string): T => JSON.parse(data)
 
 export const jsonToString = <T extends object>(obj: T): string =>
     JSON.stringify(obj)
+
+export const cloneObject = <T extends object>(obj: T): T => structuredClone(obj)
