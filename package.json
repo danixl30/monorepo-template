@@ -10,12 +10,15 @@
     "lint": "pnpm --recursive --parallel --stream run lint",
     "commit": "sui-mono commit",
     "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\"",
+    "prepare-commithooks": "husky install",
     "dependencies-graph": "pnpm --recursive --parallel --stream run dependencies-graph"
   },
   "keywords": [],
   "author": "danixl30",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
     "@s-ui/mono": "^2.34.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.0.0",
@@ -24,6 +27,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "graphviz": "^0.0.9",
+    "husky": "^8.0.3",
     "prettier": "^2.3.2",
     "typescript": "^4.9.4"
   }
