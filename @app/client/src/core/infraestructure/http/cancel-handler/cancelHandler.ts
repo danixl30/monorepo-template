@@ -7,11 +7,22 @@ export const cancelHandler = (
     onInit: OnInit,
 ): CancelHandler => {
     const cancelState = valueFactory<(() => void)[]>([])
+    const isMounted = valueFactory(true)
 
-    onInit(() => () => cancelState.value.forEach((e) => e()))
+    onInit(() => {
+        isMounted.value = true
+        return () => {
+            isMounted.value = false
+            cancelState.value.forEach((e) => e())
+        }
+    })
 
     return {
         subscribeCancel(cancel: () => void) {
+            if (!isMounted.value) {
+                cancel()
+                return
+            }
             cancelState.value = [...cancelState.value, cancel]
         },
         unsubscribeCancel(cancel: () => void) {
