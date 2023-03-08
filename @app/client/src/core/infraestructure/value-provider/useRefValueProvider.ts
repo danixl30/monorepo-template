@@ -1,4 +1,4 @@
-import { ValueProvider } from '@mono/core'
+import { ValueProvider } from '../../application/value-provider/value-provider'
 import { useRef } from 'react'
 
 export const useRefValueProvider =

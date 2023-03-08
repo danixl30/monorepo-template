@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { StateProvider } from '@mono/core'
+import { StateProvider } from '../../application/state/state-provider'
 
 export const useRefStateFactory = () => {
     const [_, forceUpdate] = useState(0)

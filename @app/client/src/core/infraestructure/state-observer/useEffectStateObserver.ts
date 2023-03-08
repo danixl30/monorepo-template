@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { StateViewer } from '@mono/core'
+import { StateViewer } from '../../application/state/state-provider'
 
 export const useEffectStateObserver = <T>(
     callback: () => (() => void) | void,
