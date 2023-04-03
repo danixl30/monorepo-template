@@ -56,6 +56,7 @@ importers:
       '@types/node': 18.11.18
       '@types/supertest': ^2.0.11
       '@types/uuid': ^9.0.0
+      async-limiter: ^2.0.0
       class-transformer: ^0.5.1
       class-validator: ^0.14.0
       glob: ^8.1.0
@@ -83,6 +84,7 @@ importers:
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       '@nestjs/swagger': 6.1.4_4fhhxyztwhblafku3krlstrun4
       '@nestjs/throttler': 4.0.0_dntc3uqqknzoduyjojusds5kla
+      async-limiter: 2.0.0
       class-transformer: 0.5.1
       class-validator: 0.14.0
       glob: 8.1.0
@@ -2284,6 +2286,10 @@ packages:
   /asap/2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
     dev: true
+
+  /async-limiter/2.0.0:
+    resolution: {integrity: sha512-nyHFzvVaR+4mfHc90/VqOUQjlnk9+ioDxQfqDuqKnm3m9sIT7joVKW8dkxeaKpamMJ3MYD73t6M8PMKEWlQESQ==}
+    dev: false
 
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
