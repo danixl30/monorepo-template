@@ -6,6 +6,7 @@ import { EventListenerModule } from '../event-listener/event.listener.module'
 import { GatewayModule } from '../gateway/gateway.module'
 import { Module } from '@nestjs/common'
 import { RateLimitModule } from '../rate-limit/rate.limit.module'
+import { ResolversModule } from '../resolvers/resolvers.module'
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { RateLimitModule } from '../rate-limit/rate.limit.module'
         EventHandlerModule,
         EventListenerModule,
         GatewayModule,
+        ResolversModule,
     ],
 })
 export class AppModule {}
