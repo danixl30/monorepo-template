@@ -5,10 +5,10 @@ import { objectValues } from '@mono/object-utils'
 
 const initializeModules = () => {
     const data = glob.sync(
-        join(__dirname, '../../../**/**/modules/*.resolvers.module.js').replace(
-            /\\/g,
-            '/',
-        ),
+        join(
+            __dirname,
+            '../../../**/infraestructure/modules/*.resolvers.module.js',
+        ).replace(/\\/g, '/'),
     )
     return data.map((e) => {
         const module = require(e)
