@@ -12,6 +12,7 @@
   "main": "./commonjs/index.js",
   "scripts": {
       "build": "tsc --project tsconfig_common.json && tsc --project tsconfig_es.json",
+        "preinstall": "tsc --project tsconfig_common.json && tsc --project tsconfig_es.json",
       "start:dev": "tsc -w --project tsconfig_common.json && tsc -w --project tsconfig_es.json"
   },
   "version": "0.0.1"
