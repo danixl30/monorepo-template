@@ -1,3 +1,1 @@
-export type ApplicationService<T, U> = {
-    execute(data: T): Promise<U>
-}
+export type ApplicationService<T, U> = (data: T) => Promise<U>
