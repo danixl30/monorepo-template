@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
+import { IDGenerator } from 'src/core/application/ID/ID.generator'
 import { v4 as UUID } from 'uuid'
-import { UUIDGenerator } from 'src/core/application/UUID/UUID.generator'
 
 @Injectable()
-export class ConcreteUUIDGenerator implements UUIDGenerator {
+export class ConcreteUUIDGenerator implements IDGenerator {
     generate(): string {
         return UUID()
     }
