@@ -14,3 +14,25 @@ export const jsonToString = <T extends object>(obj: T): string =>
     JSON.stringify(obj)
 
 export const cloneObject = <T extends object>(obj: T): T => structuredClone(obj)
+
+declare global {
+    interface ObjectConstructor {
+        groupBy<T>(
+            arr: T[],
+            callback: (ele: T, index: number) => string | number,
+        ): { [key: string | number]: T[] }
+    }
+}
+
+if (!Object.groupBy)
+    Object.groupBy = function (
+        arr: any[],
+        callback: (e: any, i: number) => string | number,
+    ) {
+        return arr.reduce((acc, e, index) => {
+            const key = callback(e, index)
+            if (acc[key]) acc.key.push(e)
+            else acc[key] = [e]
+            return acc
+        }, {})
+    }
