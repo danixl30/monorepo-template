@@ -10,9 +10,9 @@ import { StateFactory } from '../../application/state/state-factory'
 export const nativeOnInitJobLazy =
     (stateFactory: StateFactory): OnInitJobLazy =>
     <T, U extends Function>(
-            callback: (...args: ArgumentTypes<U>) => Promise<T>,
-            onTask?: OnTask,
-        ): JobStateLazy<T, U> => {
+        callback: (...args: ArgumentTypes<U>) => Promise<T>,
+        onTask?: OnTask,
+    ): JobStateLazy<T, U> => {
         const dataState = stateFactory<Optional<T>>(null)
         const loadingState = stateFactory(false)
         const errorState = stateFactory<Optional<Error>>(null)

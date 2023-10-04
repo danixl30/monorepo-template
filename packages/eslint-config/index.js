@@ -35,5 +35,11 @@ module.exports = {
         indent: [1, 4],
         'no-else-return': 1,
         '@typescript-eslint/no-non-null-assertion': 'off',
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
     },
 }

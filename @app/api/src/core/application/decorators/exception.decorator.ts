@@ -3,14 +3,12 @@ import { ApplicationService } from '../service/application.service'
 import { ExceptionReductor } from '../exception-reductor/exception.reductor'
 import { Result } from '../result-handler/result.handler'
 
-export class ExceptionDecorator<T, U, E extends ApplicationError>
-    implements ApplicationService<T, U, E>
-{
+export class ExceptionDecorator<T, U> implements ApplicationService<T, U> {
     constructor(
-        private service: ApplicationService<T, U, E>,
+        private service: ApplicationService<T, U>,
         private reductor: ExceptionReductor,
     ) {}
-    async execute(data: T): Promise<Result<U, E>> {
+    async execute(data: T): Promise<Result<U, ApplicationError>> {
         try {
             return this.service.execute(data)
         } catch (e) {

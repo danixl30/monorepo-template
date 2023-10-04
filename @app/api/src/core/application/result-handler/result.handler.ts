@@ -34,7 +34,7 @@ export class Result<T, E extends ApplicationError> {
         return new Result(value, undefined)
     }
 
-    static error<E extends ApplicationError>(error: E) {
-        return new Result(undefined, error)
+    static error<T, E extends ApplicationError>(error: E) {
+        return new Result<T, E>(undefined, error)
     }
 }

@@ -1,5 +1,9 @@
+import { ApplicationError } from '../error/application.error'
 import { DeleteFileOptions } from './types/delete.options'
+import { Result } from '../result-handler/result.handler'
 
 export interface FileManager {
-    delete(options: DeleteFileOptions): Promise<void>
+    delete(
+        options: DeleteFileOptions,
+    ): Promise<Result<boolean, ApplicationError>>
 }

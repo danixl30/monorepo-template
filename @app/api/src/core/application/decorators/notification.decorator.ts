@@ -7,13 +7,12 @@ import { ValueObject } from 'src/core/domain/value-objects/value.object'
 export class NotificationDecorator<
     T,
     U,
-    E extends ApplicationError,
     D extends object,
     V extends ValueObject<V>,
-> implements ApplicationService<T, U, E>
+> implements ApplicationService<T, U>
 {
     constructor(
-        private service: ApplicationService<T, U, E>,
+        private service: ApplicationService<T, U>,
         private notificationHandler: NotificationHandler<D, V>,
         private data: {
             to: V
@@ -21,7 +20,7 @@ export class NotificationDecorator<
         },
     ) {}
 
-    async execute(data: T): Promise<Result<U, E>> {
+    async execute(data: T): Promise<Result<U, ApplicationError>> {
         const result = await this.service.execute(data)
         this.notificationHandler.publish(this.data.to, this.data.data)
         return result

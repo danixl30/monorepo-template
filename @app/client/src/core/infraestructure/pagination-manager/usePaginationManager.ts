@@ -12,9 +12,9 @@ export const usePaginationManager =
         onInit: OnInit,
     ): PaginationManager =>
     <T>(
-            callback: (page: number) => Promise<T[]>,
-            dataTransform: (res: T[], prev: T[]) => T[] = normalDataTransform<T>(),
-        ) => {
+        callback: (page: number) => Promise<T[]>,
+        dataTransform: (res: T[], prev: T[]) => T[] = normalDataTransform<T>(),
+    ) => {
         const pageState = stateFactory<number>(1)
         const dataState = stateFactory<T[]>([])
         const errorState = stateFactory<Optional<Error>>(null)

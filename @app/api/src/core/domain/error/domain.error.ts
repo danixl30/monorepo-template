@@ -1,9 +1,14 @@
-export abstract class DomainError extends Error {
-    constructor(message: string, private _name: string) {
-        super(message)
-    }
-
-    get name() {
-        return this._name
-    }
+export type DomainError = {
+    name: string
+    message: string
+    kind: 'Domain'
 }
+
+export const createDomainError = (
+    name: string,
+    message: string,
+): DomainError => ({
+    name,
+    message,
+    kind: 'Domain',
+})
