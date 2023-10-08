@@ -16,7 +16,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./tests/e2e/core/impl/runner/jest-e2e.json",
+    "test:unit": "jest --config ./tests/unit/core/impl/runner/jest-unit.json",
     "dependencies-graph": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "dependencies": {
@@ -45,7 +46,7 @@
     "@mono/eslint-config": "workspace:^1.0.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
-    "@nestjs/testing": "^9.0.0",
+    "@nestjs/testing": "^9.2.1",
     "@types/express": "^4.17.13",
     "@types/glob": "^8.0.1",
     "@types/jest": "29.2.4",

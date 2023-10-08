@@ -19,6 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
+    "@nestjs/testing": "^9.0.0",
     "@s-ui/mono": "^2.34.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.0.0",

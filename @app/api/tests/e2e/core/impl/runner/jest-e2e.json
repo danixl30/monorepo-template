@@ -1,8 +1,8 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": ".../../../../../suits",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".suit.tests.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }

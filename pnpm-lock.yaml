@@ -10,6 +10,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^17.4.4
         version: 17.4.4
+      '@nestjs/testing':
+        specifier: ^9.0.0
+        version: 9.2.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/platform-express@9.2.1)
       '@s-ui/mono':
         specifier: ^2.34.0
         version: 2.34.0
@@ -117,7 +120,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.4(chokidar@3.5.3)(typescript@4.9.4)
       '@nestjs/testing':
-        specifier: ^9.0.0
+        specifier: ^9.2.1
         version: 9.2.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/platform-express@9.2.1)
       '@types/express':
         specifier: ^4.17.13
