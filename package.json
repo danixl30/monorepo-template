@@ -11,6 +11,7 @@
     "commit": "sui-mono commit",
     "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\"",
     "prepare-commithooks": "husky install",
+    "test:unit": "pnpm --recursive --parallel --stream run test:unit",
     "dependencies-graph": "pnpm --recursive --parallel --stream run dependencies-graph"
   },
   "keywords": [],
