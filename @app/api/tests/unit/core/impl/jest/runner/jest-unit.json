@@ -3,6 +3,7 @@
   "rootDir": ".../../../../../../suits",
   "testEnvironment": "node",
   "testRegex": ".suit.tests.ts$",
+  "setupFiles": ["../core/impl/jest/runner/setup.ts"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }
