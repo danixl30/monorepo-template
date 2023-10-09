@@ -156,7 +156,7 @@ importers:
         specifier: ^9.2.3
         version: 9.4.2(typescript@4.9.4)(webpack@5.75.0)
       ts-node:
-        specifier: ^10.0.0
+        specifier: ^10.9.1
         version: 10.9.1(@types/node@18.11.18)(typescript@4.9.4)
       tsconfig-paths:
         specifier: 4.1.1

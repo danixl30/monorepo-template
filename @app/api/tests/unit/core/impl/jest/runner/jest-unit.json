@@ -5,6 +5,10 @@
   "testRegex": ".suit.tests.ts$",
   "setupFiles": ["../core/impl/jest/runner/setup.ts"],
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)s$": [
+        "ts-jest", {
+            "tsconfig": "./tsconfig.test.json"
+        }
+    ]
   }
 }
