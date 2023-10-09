@@ -7,6 +7,8 @@ export const initializeTests = (currentPath: string) => {
     )
     return data.map((e) => {
         const module = require(e)
+        if (!module.name || !module.body)
+            throw new Error('Invalid test case from path: ' + e)
         return module
     })
 }

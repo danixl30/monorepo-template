@@ -1,6 +1,6 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".../../../../../suits",
+  "rootDir": ".../../../../../../suits",
   "testEnvironment": "node",
   "testRegex": ".suit.tests.ts$",
   "transform": {

@@ -12,6 +12,7 @@
     "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/*.ts\"",
     "prepare-commithooks": "husky install",
     "test:unit": "pnpm --recursive --parallel --stream run test:unit",
+    "test:e2e": "pnpm --recursive --parallel --stream run test:e2e",
     "dependencies-graph": "pnpm --recursive --parallel --stream run dependencies-graph"
   },
   "keywords": [],
