@@ -1,8 +1,8 @@
-import { ArgumentTypes } from '@mono/types-utils'
+import { ArgumentTypes, ReturnType } from '@mono/types-utils'
 import { MockFunction, MockFunctionAsync } from '../../contracts/function.mock'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const createFunctionMock = <T extends Function, R>(
+export const createFunctionMock = <T extends Function, R = ReturnType<T>>(
     func: (...args: ArgumentTypes<T>) => R,
 ): MockFunction<T, R> => {
     const mock: MockFunction<T, R> = function (...args: ArgumentTypes<T>): R {
