@@ -3,7 +3,7 @@ import { MockFunction, MockFunctionAsync } from '../../contracts/function.mock'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const createFunctionMock = <T extends Function, R = ReturnType<T>>(
-    func: (...args: ArgumentTypes<T>) => R,
+    func: T,
 ): MockFunction<T, R> => {
     const mock: MockFunction<T, R> = function (...args: ArgumentTypes<T>): R {
         if (
@@ -36,9 +36,12 @@ export const createFunctionMock = <T extends Function, R = ReturnType<T>>(
     return mock
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const createFunctionMockAsync = <T extends Function, R>(
-    func: (...args: ArgumentTypes<T>) => Promise<R>,
+export const createFunctionMockAsync = <
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    T extends Function,
+    R = Awaited<ReturnType<T>>,
+>(
+    func: T,
 ): MockFunctionAsync<T, R> => {
     const mock: MockFunctionAsync<T, R> = async function (
         ...args: ArgumentTypes<T>
