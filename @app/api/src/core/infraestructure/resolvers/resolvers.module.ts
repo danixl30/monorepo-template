@@ -7,7 +7,7 @@ const initializeModules = () => {
     const data = glob.sync(
         join(
             __dirname,
-            '../../../**/infraestructure/modules/*.resolvers.module.js',
+            '../../../**/infraestructure/modules/resolvers/module.js',
         ).replace(/\\/g, '/'),
     )
     return data.map((e) => {

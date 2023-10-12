@@ -4,7 +4,10 @@ import { objectValues } from '@mono/object-utils'
 
 export const initializeResolvers = (currentPath: string) => {
     const data = glob.sync(
-        join(currentPath, '../resolvers/**/*.resolver.js').replace(/\\/g, '/'),
+        join(currentPath, '../../resolvers/**/*.resolver.js').replace(
+            /\\/g,
+            '/',
+        ),
     )
     return data.map((e) => {
         const module = require(e)
