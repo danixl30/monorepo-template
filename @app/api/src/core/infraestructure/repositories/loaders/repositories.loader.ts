@@ -12,7 +12,7 @@ export const initializeRepositories = (folder: string) => {
     const repositoriesUni = glob.sync(
         join(
             __dirname,
-            `../../../../**/infraestructure/repositories/${folder}/**.repository.js`,
+            `../../../../**/infraestructure/repositories/${folder}/*.repository.js`,
         ).replace(/\\/g, '/'),
     )
     return [...repositoriesUni, ...repositoriesPart].map((e) => {

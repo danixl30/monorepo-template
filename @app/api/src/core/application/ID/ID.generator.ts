@@ -1,3 +1,3 @@
-export interface IDGenerator {
-    generate(): string
+export interface IDGenerator<T> {
+    generate(): T
 }

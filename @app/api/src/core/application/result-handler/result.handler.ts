@@ -1,8 +1,8 @@
 import { ApplicationError } from '../error/application.error'
 import { ResultHandler } from './types/result.callbacks'
 
-export class Result<T, E extends ApplicationError> {
-    private constructor(private value?: T, private error?: E) {
+export class Result<T> {
+    private constructor(private value?: T, private error?: ApplicationError) {
         if (value !== undefined && error !== undefined)
             throw new Error('Value and error not to be definined same time')
     }
@@ -16,7 +16,7 @@ export class Result<T, E extends ApplicationError> {
         return Boolean(this.error)
     }
 
-    handleError<R>(handler: (e: E) => R) {
+    handleError<R>(handler: (e: ApplicationError) => R) {
         return handler(this.error!)
     }
 
@@ -25,7 +25,7 @@ export class Result<T, E extends ApplicationError> {
         return this.value
     }
 
-    match<R, RE>(handler: ResultHandler<T, E, R, RE>) {
+    match<R, RE>(handler: ResultHandler<T, R, RE>) {
         if (!this.error) return handler.success(this.value!)
         return handler.error(this.error)
     }
@@ -34,7 +34,7 @@ export class Result<T, E extends ApplicationError> {
         return new Result(value, undefined)
     }
 
-    static error<T, E extends ApplicationError>(error: E) {
-        return new Result<T, E>(undefined, error)
+    static error<T>(error: ApplicationError) {
+        return new Result<T>(undefined, error)
     }
 }

@@ -1,6 +1,6 @@
 import { ApplicationError } from '../../error/application.error'
 
-export type ResultHandler<T, E extends ApplicationError, R, RE> = {
+export type ResultHandler<T, R, RE> = {
     success(value: T): R
-    error(error: E): RE
+    error(error: ApplicationError): RE
 }

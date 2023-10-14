@@ -7,7 +7,7 @@ const initializeModules = () => {
     const data = glob.sync(
         join(
             __dirname,
-            '../../../**/infraestructure/modules/*.event.listener.module.js',
+            '../../../**/infraestructure/modules/event-listeners/module.js',
         ).replace(/\\/g, '/'),
     )
     return data.map((e) => {

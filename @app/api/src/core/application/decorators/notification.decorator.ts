@@ -1,4 +1,3 @@
-import { ApplicationError } from '../error/application.error'
 import { ApplicationService } from '../service/application.service'
 import { NotificationHandler } from '../notifications/handler/notification.handler'
 import { Result } from '../result-handler/result.handler'
@@ -20,7 +19,7 @@ export class NotificationDecorator<
         },
     ) {}
 
-    async execute(data: T): Promise<Result<U, ApplicationError>> {
+    async execute(data: T): Promise<Result<U>> {
         const result = await this.service.execute(data)
         this.notificationHandler.publish(this.data.to, this.data.data)
         return result

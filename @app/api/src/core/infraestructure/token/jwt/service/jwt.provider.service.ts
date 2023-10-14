@@ -1,4 +1,3 @@
-import { ApplicationError } from 'src/core/application/error/application.error'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Result } from 'src/core/application/result-handler/result.handler'
@@ -7,12 +6,12 @@ import { invalidTokenError } from './errors/invalid.token'
 
 class JwtServiceManager<T extends object> implements TokenProvider<T> {
     constructor(private jwtService: JwtService) {}
-    sign(value: T): Result<string, ApplicationError> {
+    sign(value: T): Result<string> {
         const token = this.jwtService.sign(value)
         return Result.success(token)
     }
 
-    verify(value: string): Result<T, ApplicationError> {
+    verify(value: string): Result<T> {
         try {
             const data = this.jwtService.verify<T>(value)
             return Result.success(data)

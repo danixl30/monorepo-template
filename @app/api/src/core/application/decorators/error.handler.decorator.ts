@@ -7,7 +7,7 @@ export class ErrorDecorator<T, U> implements ApplicationService<T, U> {
         private service: ApplicationService<T, U>,
         private parser: (error: ApplicationError) => Error,
     ) {}
-    async execute(data: T): Promise<Result<U, ApplicationError>> {
+    async execute(data: T): Promise<Result<U>> {
         const result = await this.service.execute(data)
         if (result.isError()) throw result.handleError(this.parser)
         return result
