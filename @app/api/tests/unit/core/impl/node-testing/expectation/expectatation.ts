@@ -1,4 +1,4 @@
-import { ExpectationContract } from 'tests/unit/core/contracts/expectation.contract'
+import { ExpectationContract } from '@mono/test-utils'
 import assert from 'node:assert'
 
 const empty = () => {

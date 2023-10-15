@@ -1,4 +1,4 @@
-import { SuitDeclaration } from 'tests/unit/core/contracts/test.declaration'
+import { SuitDeclaration } from '@mono/test-utils'
 import { test } from 'node:test'
 
 export const nodeTestSuitDeclartion: SuitDeclaration = (name: string, data) => {

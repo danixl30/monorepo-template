@@ -1,5 +1,4 @@
 import { ExtractMethods } from '@mono/types-utils'
-import { objectKeys } from '@mono/object-utils'
 
 export class ClassMock<C extends object, Methods = ExtractMethods<C>> {
     constructor(private target: C = <C>{}) {
@@ -17,7 +16,7 @@ export class ClassMock<C extends object, Methods = ExtractMethods<C>> {
     }
 
     private setEmptyMethods() {
-        const methods = objectKeys(this.target)
+        const methods = Object.keys(this.target)
         methods.forEach(
             (method) =>
                 (this.target[method] = function () {

@@ -1,6 +1,7 @@
 import { ExpectationContract } from '@mono/test-utils'
+import { expect } from 'vitest'
 
-export const jestExpectation: ExpectationContract = <T>(value: T) => ({
+export const vitestExpectation: ExpectationContract = <T>(value: T) => ({
     equals: (valueToCompare: T) => expect(value).toBe(valueToCompare),
     notEquals: (valueToCompare: T) => expect(value).not.toBe(valueToCompare),
     toHaveLenght: (number: number) => expect(value).toHaveLength(number),

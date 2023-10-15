@@ -43,6 +43,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@mono/test-utils": "workspace: *",
     "@mono/eslint-config": "workspace:^1.0.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",

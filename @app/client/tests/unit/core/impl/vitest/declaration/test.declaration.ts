@@ -1,6 +1,14 @@
+import {
+    afterAll,
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    test,
+} from 'vitest'
 import { SuitDeclaration } from '@mono/test-utils'
 
-export const jestSuitDeclartion: SuitDeclaration = (name: string, data) => {
+export const vitestSuitDeclartion: SuitDeclaration = (name: string, data) => {
     if (data.options?.skip) {
         describe.skip(name, () => {
             data.tests.map((e) => test(e.name, e.body))
