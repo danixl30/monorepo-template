@@ -6,16 +6,16 @@ export type SuitDeclaration = (
             skip?: boolean
             only?: boolean
         }
-        beforeEach?: (() => void)[]
-        beforeAll?: (() => void)[]
-        afterAll?: (() => void)[]
-        afterEach?: (() => void)[]
+        beforeEach?: (() => void | Promise<void>)[]
+        beforeAll?: (() => void | Promise<void>)[]
+        afterAll?: (() => void | Promise<void>)[]
+        afterEach?: (() => void | Promise<void>)[]
     },
 ) => void
 
 export type TestDeclaration = {
     name: string
-    body(): void
+    body(): void | Promise<void>
     options?: {
         skip?: boolean
         only?: boolean
