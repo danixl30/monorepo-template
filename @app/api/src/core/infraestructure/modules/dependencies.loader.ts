@@ -4,7 +4,7 @@ import { objectValues } from '@mono/object-utils'
 
 export const loadDependencies = (currentPath: string) => {
     const data = glob.sync(
-        join(currentPath, './*.dependency.js').replace(/\\/g, '/'),
+        join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
     return data.map((e) => {
         const module = require(e)

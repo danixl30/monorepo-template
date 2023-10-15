@@ -13,6 +13,7 @@
     "prepare-commithooks": "husky install",
     "test:unit": "pnpm --recursive --parallel --stream run test:unit",
     "test:e2e": "pnpm --recursive --parallel --stream run test:e2e",
+    "postinstall": "pnpm run prepare-commithooks",
     "dependencies-graph": "pnpm --recursive --parallel --stream run dependencies-graph"
   },
   "keywords": [],
