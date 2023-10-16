@@ -23,8 +23,8 @@
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
     "@s-ui/mono": "^2.34.0",
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
-    "@typescript-eslint/parser": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
     "dependency-cruiser": "^12.6.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
@@ -33,7 +33,7 @@
     "husky": "^8.0.3",
     "prettier": "^2.3.2",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^5.0.0",
+    "typescript": "^5.2.0",
     "vitest": "^0.34.6"
   }
 }
