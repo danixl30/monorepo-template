@@ -9,6 +9,10 @@ export default mergeConfig(
             root: './tests/unit/suits',
             setupFiles: ['../core/impl/vitest/runner/setup.ts'],
             include: ['./**/suit.tests.ts'],
+            alias: {
+                'src/': '../../../../../src/',
+                'tests/': '../../../../../tests/',
+            },
         },
     }),
 )

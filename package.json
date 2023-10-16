@@ -22,7 +22,6 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
-    "@nestjs/testing": "^9.0.0",
     "@s-ui/mono": "^2.34.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.0.0",
@@ -32,8 +31,8 @@
     "eslint-plugin-prettier": "^4.0.0",
     "graphviz": "^0.0.9",
     "husky": "^8.0.3",
-    "jsdom": "^22.1.0",
     "prettier": "^2.3.2",
+    "tsconfig-paths": "4.1.1",
     "typescript": "^5.0.0",
     "vitest": "^0.34.6"
   }
