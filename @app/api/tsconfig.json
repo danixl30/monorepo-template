@@ -3,8 +3,8 @@
   "sourceRoot": "src",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2017",
+    "module": "NodeNext",
+    "target": "ESNext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
