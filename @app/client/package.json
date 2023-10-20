@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mono/array-methods": "workspace: *",
+    "@mono/pattern-matching": "workspace:*",
     "@mono/number-methods": "workspace: *",
     "@mono/object-utils": "workspace: *",
     "@mono/string-methods": "workspace: *",

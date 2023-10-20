@@ -61,6 +61,9 @@ importers:
       '@mono/object-utils':
         specifier: workspace:^0.0.1
         version: link:../../packages/object-utils
+      '@mono/pattern-matching':
+        specifier: workspace:*
+        version: link:../../packages/pattern-matching
       '@mono/string-methods':
         specifier: workspace:*
         version: link:../../packages/string-methods
@@ -179,6 +182,9 @@ importers:
       '@mono/object-utils':
         specifier: 'workspace: *'
         version: link:../../packages/object-utils
+      '@mono/pattern-matching':
+        specifier: workspace:*
+        version: link:../../packages/pattern-matching
       '@mono/string-methods':
         specifier: 'workspace: *'
         version: link:../../packages/string-methods
@@ -227,6 +233,8 @@ importers:
   packages/number-methods: {}
 
   packages/object-utils: {}
+
+  packages/pattern-matching: {}
 
   packages/string-methods: {}
 
