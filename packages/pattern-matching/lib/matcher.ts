@@ -10,28 +10,24 @@ type Callback<T, R> = (input: T) => R
 
 class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
-    withMany(targets: SubType<T>[], callback: Callback<T, R>) {
+    with(...args: [...targets: SubType<T>[], callback: Callback<T, R>]) {
         if (this.callbackMatched) return this
-        const matched = targets.some((e) => isEqual(this.input, e))
-        if (matched) this.callbackMatched = callback
-        return this
-    }
-
-    with(targets: SubType<T>, callback: Callback<T, R>) {
-        if (this.callbackMatched) return this
-        const matched = isEqual(this.input, targets)
+        const callback = args.pop() as Callback<T, R>
+        if (typeof callback !== 'function')
+            throw new Error('Callback not valid')
+        const matched = args.some((e) => isEqual(this.input, e))
         if (matched) this.callbackMatched = callback
         return this
     }
 
     when(
-        targets: Callback<T, boolean> | Callback<T, boolean>[],
-        callback: Callback<T, R>,
+        ...args: [...targets: Callback<T, boolean>[], callback: Callback<T, R>]
     ) {
         if (this.callbackMatched) return this
-        const matched = Array.isArray(targets)
-            ? targets.some((e) => e(this.input))
-            : targets(this.input)
+        const callback = args.pop() as Callback<T, R>
+        if (typeof callback !== 'function')
+            throw new Error('Callback not valid')
+        const matched = args.some((e) => e(this.input))
         if (matched) this.callbackMatched = callback
         return this
     }
