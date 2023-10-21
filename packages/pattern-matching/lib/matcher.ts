@@ -1,6 +1,6 @@
 import { isEqual } from './comparator'
 
-type SubType<T> = T extends object
+export type SubType<T> = T extends object
     ? T extends Array<infer U>
         ? Partial<U>[]
         : Partial<T>
@@ -12,12 +12,21 @@ class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
     with(targets: SubType<T> | SubType<T>[], callback: Callback<T, R>) {
         if (this.callbackMatched) return this
-        if (!Array.isArray(targets)) {
-            const matched = isEqual(this.input, targets)
-            if (matched) this.callbackMatched = callback
-            return this
-        }
-        const matched = targets.some((e) => isEqual(this.input, e))
+        const matched = Array.isArray(targets)
+            ? targets.some((e) => isEqual(this.input, e))
+            : isEqual(this.input, targets)
+        if (matched) this.callbackMatched = callback
+        return this
+    }
+
+    when(
+        targets: Callback<T, boolean> | Callback<T, boolean>[],
+        callback: Callback<T, R>,
+    ) {
+        if (this.callbackMatched) return this
+        const matched = Array.isArray(targets)
+            ? targets.some((e) => e(this.input))
+            : targets(this.input)
         if (matched) this.callbackMatched = callback
         return this
     }
