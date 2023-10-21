@@ -9,8 +9,7 @@ type ComparationUtil = {
 const anyComp: ComparationUtil = () => true
 anyComp.__kind = 'any'
 
-const stringComp: ComparationUtil = (data: any) =>
-    typeof data === 'string' && String.isString(data)
+const stringComp: ComparationUtil = (data: any) => typeof data === 'string'
 stringComp.__kind = 'string'
 
 const numberComp: ComparationUtil = (data: any) => typeof data === 'number'
