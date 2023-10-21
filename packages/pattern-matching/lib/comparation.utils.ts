@@ -54,6 +54,13 @@ const whenComp = <T>(callback: (input: T) => boolean): any => {
     return whenLogic
 }
 
+const instanceOfComp = (target: new (...args: any) => any): any => {
+    const instanceOfLogic: ComparationUtil = (data: any) =>
+        data instanceof target
+    instanceOfLogic.__kind = 'InstanceOf'
+    return instanceOfLogic
+}
+
 export const ComparationUtils = {
     Any: anyComp as any,
     String: stringComp as any,
@@ -65,4 +72,5 @@ export const ComparationUtils = {
     When: whenComp,
     And: andComp,
     Or: orComp,
+    InstanceOf: instanceOfComp,
 }
