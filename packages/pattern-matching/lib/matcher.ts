@@ -10,11 +10,16 @@ type Callback<T, R> = (input: T) => R
 
 class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
-    with(targets: SubType<T> | SubType<T>[], callback: Callback<T, R>) {
+    withMany(targets: SubType<T>[], callback: Callback<T, R>) {
         if (this.callbackMatched) return this
-        const matched = Array.isArray(targets)
-            ? targets.some((e) => isEqual(this.input, e))
-            : isEqual(this.input, targets)
+        const matched = targets.some((e) => isEqual(this.input, e))
+        if (matched) this.callbackMatched = callback
+        return this
+    }
+
+    with(targets: SubType<T>, callback: Callback<T, R>) {
+        if (this.callbackMatched) return this
+        const matched = isEqual(this.input, targets)
         if (matched) this.callbackMatched = callback
         return this
     }
