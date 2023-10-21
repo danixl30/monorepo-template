@@ -61,6 +61,60 @@ const instanceOfComp = (target: new (...args: any) => any): any => {
     return instanceOfLogic
 }
 
+const arrFiller = (data: any) => {
+    const obj = {
+        data,
+        __kind: 'ArrFiller',
+    }
+    return [obj]
+}
+
+const arrayComp = <T>(...args: (ComparationUtil | SubType<T>)[]): any => {
+    const arrayLogic: ComparationUtil = (data: any) => {
+        if (!Array.isArray(data)) return false
+        if (Array.isArray(data) && args.length === 0) return true
+        if (args.length === 1) {
+            const arr = new Array<any>(data.length).fill(args[0])
+            return isEqual(data, arr)
+        }
+        const arrFillIndex = args.findIndex(
+            (e) => (e as any).__kind === 'ArrFiller',
+        )
+        const newArr = args.splice(
+            arrFillIndex,
+            1,
+            ...new Array(data.length - args.length - 1).fill(
+                (args[arrFillIndex] as any).data,
+            ),
+        )
+        return isEqual(data, newArr)
+    }
+    arrayLogic.__kind = 'Array'
+    return arrayLogic
+}
+
+const setComp = (comp: ComparationUtil): any => {
+    const setLogic: ComparationUtil = (data: any) => {
+        if (!(data instanceof Set)) return false
+        const values = Array.from(data)
+        const verifiers = new Array(values.length).fill(comp)
+        return isEqual(values, verifiers)
+    }
+    setLogic.__kind = 'Set'
+    return setLogic
+}
+
+const mapComp = (key: ComparationUtil, value: ComparationUtil): any => {
+    const mapLogic: ComparationUtil = (data: any) => {
+        if (!(data instanceof Map)) return false
+        const values = Array.from(data)
+        const verifiers = new Array(values.length).fill([key, value])
+        return isEqual(values, verifiers)
+    }
+    mapLogic.__kind = 'Map'
+    return mapLogic
+}
+
 export const ComparationUtils = {
     Any: anyComp as any,
     String: stringComp as any,
@@ -73,4 +127,8 @@ export const ComparationUtils = {
     And: andComp,
     Or: orComp,
     InstanceOf: instanceOfComp,
+    Array: arrayComp,
+    ArrayFiller: arrFiller,
+    Set: setComp,
+    Map: mapComp,
 }
