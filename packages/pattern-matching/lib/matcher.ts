@@ -5,21 +5,38 @@ export type ComparationUtil<T> = {
     __kind: string
 }
 
+export type ArrayFiller<T> = {
+    data: T
+    __kind: 'ArrFiller'
+}
+
 export type SubType<T> = T extends Record<any, any>
     ? {
           [P in keyof T]?: SubType<T[P]> | ComparationUtil<T[P]>
       }
     : T extends Array<infer U>
-    ? SubType<U>[] | ComparationUtil<SubType<U>[]>
+    ? (
+          | SubType<U>
+          | ComparationUtil<SubType<U>>
+          | ArrayFiller<SubType<U> | ComparationUtil<SubType<U>>>
+      )[]
     : T | ComparationUtil<T>
 
 type Callback<T, R> = (input: T) => R
+
+type ArrayOrNever<T> = T extends Array<infer U>
+    ? (SubType<U> | ArrayFiller<SubType<U>> | ComparationUtil<SubType<U>>)[]
+    : never
 
 class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
     with(
         ...args: [
-            ...targets: (SubType<T> | ComparationUtil<SubType<T>>)[],
+            ...targets: (
+                | SubType<T>
+                | ComparationUtil<SubType<T>>
+                | ArrayOrNever<T>
+            )[],
             callback: Callback<T, R>,
         ]
     ) {

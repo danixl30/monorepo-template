@@ -11,9 +11,7 @@ export const body = () => {
         //     },
         //     () => console.log('test matched'),
         // )
-        .with(C.Array(C.Or<number | string>(1, C.String)), () =>
-            console.log('arr'),
-        )
+        .with([1, ...C.ArrayFiller(C.String), 1], () => console.log('arr'))
         .otherwise(() => console.log('default1'))
     expect(true).equals(true)
 }

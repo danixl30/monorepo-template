@@ -1,4 +1,4 @@
-import { ComparationUtil, SubType } from './matcher'
+import { ArrayFiller, ComparationUtil, SubType } from './matcher'
 import { isEqual } from './comparator'
 
 const anyComp: ComparationUtil<any> = () => true
@@ -60,11 +60,6 @@ const instanceOfComp = (target: new (...args: any) => any) => {
     > = (data) => data instanceof target
     instanceOfLogic.__kind = 'InstanceOf'
     return instanceOfLogic
-}
-
-type ArrayFiller<T> = {
-    data: T
-    __kind: 'ArrFiller'
 }
 
 const arrFiller = <T extends any[]>(data: SubType<UnwrapArray<T>>) => {
