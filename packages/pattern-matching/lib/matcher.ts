@@ -12,7 +12,10 @@ export type ArrayFiller<T> = {
 
 export type SubType<T> = T extends Record<any, any>
     ? {
-          [P in keyof T]?: SubType<T[P]> | ComparationUtil<T[P]>
+          [P in keyof T]?:
+              | SubType<T[P]>
+              | ComparationUtil<SubType<T[P]>>
+              | ArrayOrNever<T[P]>
       }
     : T extends Array<infer U>
     ? (
