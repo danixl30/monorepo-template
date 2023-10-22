@@ -17,7 +17,12 @@ type Callback<T, R> = (input: T) => R
 
 class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
-    with(...args: [...targets: SubType<T>[], callback: Callback<T, R>]) {
+    with(
+        ...args: [
+            ...targets: (SubType<T> | ComparationUtil<SubType<T>>)[],
+            callback: Callback<T, R>,
+        ]
+    ) {
         if (this.callbackMatched) return this
         const callback = args.pop() as Callback<T, R>
         if (typeof callback !== 'function')
