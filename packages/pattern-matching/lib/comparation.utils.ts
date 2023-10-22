@@ -20,30 +20,28 @@ const bigintComp: ComparationUtil<bigint> = (data: any) =>
     typeof data === 'bigint'
 bigintComp.__kind = 'bigint'
 
-const notComp = <T>(target: SubType<T> | ComparationUtil<SubType<T>>) => {
+const notComp = <T>(target: SubType<T>) => {
     const notLogic: ComparationUtil<SubType<T>> = (data) =>
-        isEqual(data, target)
+        !isEqual(data, target)
     notLogic.__kind = 'Not'
     return notLogic
 }
 
-const andComp = <T>(
-    ...target: (SubType<T> | ComparationUtil<SubType<T>>)[]
-) => {
+const andComp = <T>(...target: SubType<T>[]) => {
     const andLogic: ComparationUtil<SubType<T>> = (data) =>
         target.every((target) => isEqual(data, target))
     andLogic.__kind = 'And'
     return andLogic
 }
 
-const orComp = <T>(...target: (SubType<T> | ComparationUtil<SubType<T>>)[]) => {
+const orComp = <T>(...target: SubType<T>[]) => {
     const orLogic: ComparationUtil<SubType<T>> = (data) =>
         target.some((target) => isEqual(data, target))
     orLogic.__kind = 'Or'
     return orLogic
 }
 
-const optionalComp = <T>(target?: SubType<T> | ComparationUtil<SubType<T>>) => {
+const optionalComp = <T>(target?: SubType<T>) => {
     const optionalLogic: ComparationUtil<SubType<T>> = (data: any) =>
         data === null || data === undefined || isEqual(data, target)
     optionalLogic.__kind = 'Not'
@@ -69,12 +67,8 @@ type ArrayFiller<T> = {
     __kind: 'ArrFiller'
 }
 
-const arrFiller = <T extends any[]>(
-    data: ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>,
-) => {
-    const obj: ArrayFiller<
-        ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>
-    > = {
+const arrFiller = <T extends any[]>(data: SubType<UnwrapArray<T>>) => {
+    const obj: ArrayFiller<SubType<UnwrapArray<T>>> = {
         data,
         __kind: 'ArrFiller',
     }
@@ -85,7 +79,6 @@ type UnwrapArray<T> = T extends Array<infer U> ? U : never
 
 const arrayComp = <T extends any[]>(
     ...args: (
-        | ComparationUtil<SubType<UnwrapArray<T>>>
         | SubType<UnwrapArray<T>>
         | ArrayFiller<
               ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>
@@ -96,20 +89,24 @@ const arrayComp = <T extends any[]>(
         if (!Array.isArray(data)) return false
         if (Array.isArray(data) && args.length === 0) return true
         if (args.length === 1) {
-            const arr = new Array<any>(data.length).fill(args[0])
+            const arr = new Array(data.length).fill(args[0])
             return isEqual(data, arr)
         }
         const arrFillIndex = args.findIndex(
             (e) => (e as any).__kind === 'ArrFiller',
         )
-        const newArr = args.splice(
+        if (arrFillIndex === -1)
+            throw new Error(
+                'You have more than 1 pattern and not and array filler',
+            )
+        args.splice(
             arrFillIndex,
             1,
-            ...new Array(data.length - args.length - 1).fill(
+            ...new Array(data.length - (args.length - 1)).fill(
                 (args[arrFillIndex] as any).data,
             ),
         )
-        return isEqual(data, newArr)
+        return isEqual(data, args)
     }
     arrayLogic.__kind = 'Array'
     return arrayLogic
