@@ -1,10 +1,17 @@
 import { isEqual } from './comparator'
 
-export type SubType<T> = T extends object
-    ? T extends Array<infer U>
-        ? Partial<U>[]
-        : Partial<T>
-    : T
+export type ComparationUtil<T> = {
+    (data: T): boolean
+    __kind: string
+}
+
+export type SubType<T> = T extends Record<any, any>
+    ? {
+          [P in keyof T]?: SubType<T[P]> | ComparationUtil<T[P]>
+      }
+    : T extends Array<infer U>
+    ? SubType<U>[] | ComparationUtil<SubType<U>[]>
+    : T | ComparationUtil<T>
 
 type Callback<T, R> = (input: T) => R
 

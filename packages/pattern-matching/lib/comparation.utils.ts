@@ -1,76 +1,98 @@
-import { SubType } from './matcher'
+import { ComparationUtil, SubType } from './matcher'
 import { isEqual } from './comparator'
 
-type ComparationUtil = {
-    (data: any): boolean
-    __kind: string
-}
-
-const anyComp: ComparationUtil = () => true
+const anyComp: ComparationUtil<any> = () => true
 anyComp.__kind = 'any'
 
-const stringComp: ComparationUtil = (data: any) => typeof data === 'string'
+const stringComp: ComparationUtil<string> = (data: any) =>
+    typeof data === 'string'
 stringComp.__kind = 'string'
 
-const numberComp: ComparationUtil = (data: any) => typeof data === 'number'
+const numberComp: ComparationUtil<number> = (data: any) =>
+    typeof data === 'number'
 numberComp.__kind = 'number'
 
-const booleanComp: ComparationUtil = (data: any) => typeof data === 'boolean'
+const booleanComp: ComparationUtil<boolean> = (data: any) =>
+    typeof data === 'boolean'
 booleanComp.__kind = 'boolean'
 
-const bigintComp: ComparationUtil = (data: any) => typeof data === 'bigint'
+const bigintComp: ComparationUtil<bigint> = (data: any) =>
+    typeof data === 'bigint'
 bigintComp.__kind = 'bigint'
 
-const notComp = <T>(target: SubType<T> | ComparationUtil): any => {
-    const notLogic: ComparationUtil = (data: any) => isEqual(data, target)
+const notComp = <T>(target: SubType<T> | ComparationUtil<SubType<T>>) => {
+    const notLogic: ComparationUtil<SubType<T>> = (data) =>
+        isEqual(data, target)
     notLogic.__kind = 'Not'
     return notLogic
 }
 
-const andComp = <T>(...target: (SubType<T> | ComparationUtil)[]): any => {
-    const andLogic: ComparationUtil = (data: any) =>
+const andComp = <T>(
+    ...target: (SubType<T> | ComparationUtil<SubType<T>>)[]
+) => {
+    const andLogic: ComparationUtil<SubType<T>> = (data) =>
         target.every((target) => isEqual(data, target))
     andLogic.__kind = 'And'
     return andLogic
 }
 
-const orComp = <T>(...target: (SubType<T> | ComparationUtil)[]): any => {
-    const orLogic: ComparationUtil = (data: any) =>
+const orComp = <T>(...target: (SubType<T> | ComparationUtil<SubType<T>>)[]) => {
+    const orLogic: ComparationUtil<SubType<T>> = (data) =>
         target.some((target) => isEqual(data, target))
     orLogic.__kind = 'Or'
     return orLogic
 }
 
-const optionalComp = <T>(target?: SubType<T> | ComparationUtil): any => {
-    const optionalLogic: ComparationUtil = (data: any) =>
+const optionalComp = <T>(target?: SubType<T> | ComparationUtil<SubType<T>>) => {
+    const optionalLogic: ComparationUtil<SubType<T>> = (data: any) =>
         data === null || data === undefined || isEqual(data, target)
     optionalLogic.__kind = 'Not'
     return optionalLogic
 }
 
-const whenComp = <T>(callback: (input: T) => boolean): any => {
-    const whenLogic: ComparationUtil = (data: any) => callback(data)
+const whenComp = <T>(callback: (input: T) => boolean) => {
+    const whenLogic: ComparationUtil<T> = (data) => callback(data)
     whenLogic.__kind = 'When'
     return whenLogic
 }
 
-const instanceOfComp = (target: new (...args: any) => any): any => {
-    const instanceOfLogic: ComparationUtil = (data: any) =>
-        data instanceof target
+const instanceOfComp = (target: new (...args: any) => any) => {
+    const instanceOfLogic: ComparationUtil<
+        (new (...args: any) => any) | object
+    > = (data) => data instanceof target
     instanceOfLogic.__kind = 'InstanceOf'
     return instanceOfLogic
 }
 
-const arrFiller = (data: any) => {
-    const obj = {
+type ArrayFiller<T> = {
+    data: T
+    __kind: 'ArrFiller'
+}
+
+const arrFiller = <T extends any[]>(
+    data: ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>,
+) => {
+    const obj: ArrayFiller<
+        ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>
+    > = {
         data,
         __kind: 'ArrFiller',
     }
     return [obj]
 }
 
-const arrayComp = <T>(...args: (ComparationUtil | SubType<T>)[]): any => {
-    const arrayLogic: ComparationUtil = (data: any) => {
+type UnwrapArray<T> = T extends Array<infer U> ? U : never
+
+const arrayComp = <T extends any[]>(
+    ...args: (
+        | ComparationUtil<SubType<UnwrapArray<T>>>
+        | SubType<UnwrapArray<T>>
+        | ArrayFiller<
+              ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>
+          >
+    )[]
+) => {
+    const arrayLogic: ComparationUtil<SubType<T>> = (data) => {
         if (!Array.isArray(data)) return false
         if (Array.isArray(data) && args.length === 0) return true
         if (args.length === 1) {
@@ -93,8 +115,10 @@ const arrayComp = <T>(...args: (ComparationUtil | SubType<T>)[]): any => {
     return arrayLogic
 }
 
-const setComp = (comp: ComparationUtil): any => {
-    const setLogic: ComparationUtil = (data: any) => {
+type UnwrapSet<T> = T extends Set<infer U> ? U : never
+
+const setComp = <T extends Set<any>>(comp: ComparationUtil<UnwrapSet<T>>) => {
+    const setLogic: ComparationUtil<SubType<T>> = (data: any) => {
         if (!(data instanceof Set)) return false
         const values = Array.from(data)
         const verifiers = new Array(values.length).fill(comp)
@@ -104,8 +128,14 @@ const setComp = (comp: ComparationUtil): any => {
     return setLogic
 }
 
-const mapComp = (key: ComparationUtil, value: ComparationUtil): any => {
-    const mapLogic: ComparationUtil = (data: any) => {
+type UnwrapKey<T> = T extends Map<infer U, any> ? U : never
+type UnwrapValue<T> = T extends Map<any, infer U> ? U : never
+
+const mapComp = <T extends Map<any, any>>(
+    key: ComparationUtil<SubType<UnwrapKey<T>>>,
+    value: ComparationUtil<SubType<UnwrapValue<T>>>,
+) => {
+    const mapLogic: ComparationUtil<SubType<T>> = (data: any) => {
         if (!(data instanceof Map)) return false
         const values = Array.from(data)
         const verifiers = new Array(values.length).fill([key, value])
@@ -116,11 +146,11 @@ const mapComp = (key: ComparationUtil, value: ComparationUtil): any => {
 }
 
 export const ComparationUtils = {
-    Any: anyComp as any,
-    String: stringComp as any,
-    Number: numberComp as any,
-    Boolean: booleanComp as any,
-    BigInt: bigintComp as any,
+    Any: anyComp,
+    String: stringComp,
+    Number: numberComp,
+    Boolean: booleanComp,
+    BigInt: bigintComp,
     Not: notComp,
     Optional: optionalComp,
     When: whenComp,
