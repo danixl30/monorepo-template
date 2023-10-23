@@ -6,6 +6,7 @@ export const name = 'firstTest'
 export const body = () => {
     match({
         a: [1, '', '', '', 1],
+        b: 1,
     })
         // .with(
         //     {
@@ -16,6 +17,7 @@ export const body = () => {
         .with(
             {
                 a: [1, ...C.ArrayFiller(C.String), 1],
+                b: C.Number,
             },
             () => console.log('arr'),
         )
