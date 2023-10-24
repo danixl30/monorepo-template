@@ -118,7 +118,7 @@ Array.prototype.asyncFind = async function (cb) {
 Array.prototype.asyncFindMap = async function (cb) {
     for (const [index, element] of this.entries()) {
         const res = await cb(element, index, this)
-        if (res) {
+        if (res !== undefined && res !== null) {
             return res
         }
     }
@@ -128,7 +128,7 @@ Array.prototype.asyncFindMap = async function (cb) {
 Array.prototype.findMap = function (cb) {
     for (const [index, element] of this.entries()) {
         const res = cb(element, index, this)
-        if (res) {
+        if (res !== undefined && res !== null) {
             return res
         }
     }
