@@ -76,3 +76,7 @@ class Matcher<T, R = any> {
 }
 
 export const match = <T, R = any>(input: T) => new Matcher<T, R>(input)
+export const isMatch = <T>(
+    input: T,
+    target: SubType<T> | ComparationUtil<SubType<T>> | ArrayOrNever<T>,
+) => isEqual(input, target)
