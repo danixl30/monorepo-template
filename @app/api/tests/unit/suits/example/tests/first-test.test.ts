@@ -1,6 +1,5 @@
+import { ComparationUtils as C, match } from '@mono/pattern-matching'
 import { expect } from '../../../core/impl'
-import { match } from '@mono/pattern-matching'
-import { ComparationUtils as C } from '@mono/pattern-matching'
 
 export const name = 'firstTest'
 export const body = () => {
@@ -17,7 +16,7 @@ export const body = () => {
         .with(
             {
                 a: [1, ...C.ArrayFiller(C.String), 1],
-                b: C.Number,
+                b: C.Any,
             },
             () => console.log('arr'),
         )

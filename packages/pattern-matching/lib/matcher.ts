@@ -31,18 +31,14 @@ type ArrayOrNever<T> = T extends Array<infer U>
     ? (SubType<U> | ArrayFiller<SubType<U>> | ComparationUtil<SubType<U>>)[]
     : never
 
+export type Pattern<T> =
+    | SubType<T>
+    | ComparationUtil<SubType<T>>
+    | ArrayOrNever<T>
+
 class Matcher<T, R = any> {
     constructor(private input: T, private callbackMatched?: Callback<T, R>) {}
-    with(
-        ...args: [
-            ...targets: (
-                | SubType<T>
-                | ComparationUtil<SubType<T>>
-                | ArrayOrNever<T>
-            )[],
-            callback: Callback<T, R>,
-        ]
-    ) {
+    with(...args: [...targets: Pattern<T>[], callback: Callback<T, R>]) {
         if (this.callbackMatched) return this
         const callback = args.pop() as Callback<T, R>
         if (typeof callback !== 'function')
@@ -76,7 +72,5 @@ class Matcher<T, R = any> {
 }
 
 export const match = <T, R = any>(input: T) => new Matcher<T, R>(input)
-export const isMatch = <T>(
-    input: T,
-    target: SubType<T> | ComparationUtil<SubType<T>> | ArrayOrNever<T>,
-) => isEqual(input, target)
+export const isMatch = <T>(input: T, ...targets: Pattern<T>[]) =>
+    targets.some((target) => isEqual(input, target))

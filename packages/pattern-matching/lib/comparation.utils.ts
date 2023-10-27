@@ -1,4 +1,4 @@
-import { ArrayFiller, ComparationUtil, SubType } from './matcher'
+import { ArrayFiller, ComparationUtil, Pattern } from './matcher'
 import { isEqual } from './comparator'
 
 const anyComp: ComparationUtil<any> = () => true
@@ -20,29 +20,29 @@ const bigintComp: ComparationUtil<bigint> = (data: any) =>
     typeof data === 'bigint'
 bigintComp.__kind = 'bigint'
 
-const notComp = <T>(target: SubType<T>) => {
-    const notLogic: ComparationUtil<SubType<T>> = (data) =>
+const notComp = <T>(target: Pattern<T>) => {
+    const notLogic: ComparationUtil<Pattern<T>> = (data) =>
         !isEqual(data, target)
     notLogic.__kind = 'Not'
     return notLogic
 }
 
-const andComp = <T>(...target: SubType<T>[]) => {
-    const andLogic: ComparationUtil<SubType<T>> = (data) =>
+const andComp = <T>(...target: Pattern<T>[]) => {
+    const andLogic: ComparationUtil<Pattern<T>> = (data) =>
         target.every((target) => isEqual(data, target))
     andLogic.__kind = 'And'
     return andLogic
 }
 
-const orComp = <T>(...target: SubType<T>[]) => {
-    const orLogic: ComparationUtil<SubType<T>> = (data) =>
+const orComp = <T>(...target: Pattern<T>[]) => {
+    const orLogic: ComparationUtil<Pattern<T>> = (data) =>
         target.some((target) => isEqual(data, target))
     orLogic.__kind = 'Or'
     return orLogic
 }
 
-const optionalComp = <T>(target?: SubType<T>) => {
-    const optionalLogic: ComparationUtil<SubType<T>> = (data: any) =>
+const optionalComp = <T>(target?: Pattern<T>) => {
+    const optionalLogic: ComparationUtil<Pattern<T>> = (data: any) =>
         data === null || data === undefined || isEqual(data, target)
     optionalLogic.__kind = 'Not'
     return optionalLogic
@@ -62,8 +62,8 @@ const instanceOfComp = (target: new (...args: any) => any) => {
     return instanceOfLogic
 }
 
-const arrFiller = <T extends any[]>(data: SubType<UnwrapArray<T>>) => {
-    const obj: ArrayFiller<SubType<UnwrapArray<T>>> = {
+const arrFiller = <T extends any[]>(data: Pattern<UnwrapArray<T>>) => {
+    const obj: ArrayFiller<Pattern<UnwrapArray<T>>> = {
         data,
         __kind: 'ArrFiller',
     }
@@ -72,15 +72,8 @@ const arrFiller = <T extends any[]>(data: SubType<UnwrapArray<T>>) => {
 
 type UnwrapArray<T> = T extends Array<infer U> ? U : never
 
-const arrayComp = <T extends any[]>(
-    ...args: (
-        | SubType<UnwrapArray<T>>
-        | ArrayFiller<
-              ComparationUtil<SubType<UnwrapArray<T>>> | SubType<UnwrapArray<T>>
-          >
-    )[]
-) => {
-    const arrayLogic: ComparationUtil<SubType<T>> = (data) => {
+const arrayComp = <T extends any[]>(...args: Pattern<UnwrapArray<T>>[]) => {
+    const arrayLogic: ComparationUtil<Pattern<T>> = (data) => {
         if (!Array.isArray(data)) return false
         if (Array.isArray(data) && args.length === 0) return true
         if (args.length === 1) {
@@ -110,7 +103,7 @@ const arrayComp = <T extends any[]>(
 type UnwrapSet<T> = T extends Set<infer U> ? U : never
 
 const setComp = <T extends Set<any>>(comp: ComparationUtil<UnwrapSet<T>>) => {
-    const setLogic: ComparationUtil<SubType<T>> = (data: any) => {
+    const setLogic: ComparationUtil<Pattern<T>> = (data: any) => {
         if (!(data instanceof Set)) return false
         const values = Array.from(data)
         const verifiers = new Array(values.length).fill(comp)
@@ -124,10 +117,10 @@ type UnwrapKey<T> = T extends Map<infer U, any> ? U : never
 type UnwrapValue<T> = T extends Map<any, infer U> ? U : never
 
 const mapComp = <T extends Map<any, any>>(
-    key: ComparationUtil<SubType<UnwrapKey<T>>>,
-    value: ComparationUtil<SubType<UnwrapValue<T>>>,
+    key: ComparationUtil<Pattern<UnwrapKey<T>>>,
+    value: ComparationUtil<Pattern<UnwrapValue<T>>>,
 ) => {
-    const mapLogic: ComparationUtil<SubType<T>> = (data: any) => {
+    const mapLogic: ComparationUtil<Pattern<T>> = (data: any) => {
         if (!(data instanceof Map)) return false
         const values = Array.from(data)
         const verifiers = new Array(values.length).fill([key, value])
