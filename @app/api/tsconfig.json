@@ -1,11 +1,12 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "extends": "../../tsconfig.json",
+  "include": ["src"],
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2017",
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "target": "ESNext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./"

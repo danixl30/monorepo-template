@@ -4,4 +4,4 @@ import '@mono/number-methods'
 import '@mono/object-utils'
 import bootstrap from './core/infraestructure/server/bootstrap'
 
-bootstrap()
+await bootstrap()

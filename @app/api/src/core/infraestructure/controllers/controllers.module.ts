@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common'
-import { glob } from 'glob'
-import { join } from 'node:path'
+import glob from 'glob'
+import { join, dirname } from 'node:path'
 import { objectValues } from '@mono/object-utils'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const initializeModules = () => {
     const data = glob.sync(
@@ -10,13 +13,13 @@ const initializeModules = () => {
             '../../../**/infraestructure/modules/controllers/module.js',
         ).replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import(e)
         return objectValues(module)[0]
     })
 }
 
 @Module({
-    imports: initializeModules(),
+    imports: await initializeModules(),
 })
 export class ControllersModule {}
