@@ -1,8 +1,12 @@
-import { Module } from '@nestjs/common'
 import { AsyncLimiterTaskQueue } from './service/async.limiter.task.queue'
+import { ServiceModule } from '../decorators/service.module'
 
-@Module({
-    providers: [AsyncLimiterTaskQueue],
-    exports: [AsyncLimiterTaskQueue],
-})
+export const NATIVE_TASK_QUEUE = 'NATIVE_TASK_QUEUE'
+
+@ServiceModule([
+    {
+        provide: NATIVE_TASK_QUEUE,
+        useClass: AsyncLimiterTaskQueue,
+    },
+])
 export class TaskQueueModule {}

@@ -2,8 +2,8 @@ export type Dictionary<T> = {
     [key: string]: T
 }
 
-export type TypeClass<T> = {
-    new (): T
+export type TypeClass<T, U = any> = {
+    new (...args: U[]): T
 }
 
 export type Optional<T> = T | undefined | null

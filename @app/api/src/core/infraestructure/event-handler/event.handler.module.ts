@@ -1,7 +1,5 @@
+import { BarrelModule } from '../decorators/barrel.module'
 import { EventHandlerNativeModule } from './native/module/event.handler.native.module'
-import { Module } from '@nestjs/common'
 
-@Module({
-    imports: [EventHandlerNativeModule],
-})
+@BarrelModule([EventHandlerNativeModule])
 export class EventHandlerModule {}

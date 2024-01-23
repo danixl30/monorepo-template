@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { ConfigurationModule } from '../decorators/config.module.decorator'
 
-@Module({})
+@ConfigurationModule([])
 export class DatabaseConnectionModule {}

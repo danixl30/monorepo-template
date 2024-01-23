@@ -15,12 +15,20 @@ export const jsonToString = <T extends object>(obj: T): string =>
 
 export const cloneObject = <T extends object>(obj: T): T => structuredClone(obj)
 
+type PublicSetters<T> = {
+    [K in keyof T]?: T[K] extends (...args: any[]) => any ? never : T[K]
+}
+
 declare global {
     interface ObjectConstructor {
         groupBy<T>(
             arr: T[],
             callback: (ele: T, index: number) => string | number,
         ): { [key: string | number]: T[] }
+        assignPropeties<T extends object>(
+            target: T,
+            values: PublicSetters<T>,
+        ): void
     }
 }
 
@@ -36,3 +44,7 @@ if (!Object.groupBy)
             return acc
         }, {})
     }
+
+Object.assignPropeties = function (target: object, values: object) {
+    Object.keys(target).forEach((e) => (target[e] = values[e]))
+}

@@ -4,6 +4,12 @@ type CallBackFilter<T> = (
     collection: T[],
 ) => Promise<boolean>
 
+type CallBackFilterSync<T> = (
+    value: T,
+    index: number,
+    collection: T[],
+) => boolean
+
 type CallBackFind<T> = (
     value: T,
     index: number,
@@ -63,6 +69,10 @@ declare global {
             callback: (e: T, i: number, arr: T[]) => Promise<U>,
         ): Promise<U[]>
         asyncFilter(callback: CallBackFilter<T>): Promise<T[]>
+        asyncFilterWithComplement(
+            callback: CallBackFilter<T>,
+        ): Promise<[T[], T[]]>
+        filterWithComplement(callback: CallBackFilterSync<T>): [T[], T[]]
         asyncFind(callback: CallBackFind<T>): Promise<T | undefined>
         asyncFindIndex(callback: CallBackFindIndex<T>): Promise<number>
         asyncSome(callback: CallBackSome<T>): Promise<boolean>
@@ -232,5 +242,31 @@ if (!Array.prototype.toSpliced)
         newArr.splice(start, elementCount, ...items)
         return newArr
     }
+
+Array.prototype.filterWithComplement = function (callback) {
+    const arrSet: any[] = []
+    const complement: any[] = []
+    for (const [index, element] of this.entries()) {
+        if (callback(element, index, this)) {
+            arrSet.push(element)
+        } else {
+            complement.push(element)
+        }
+    }
+    return [arrSet, complement]
+}
+
+Array.prototype.asyncFilterWithComplement = async function (callback) {
+    const arrSet: any[] = []
+    const complement: any[] = []
+    for (const [index, element] of this.entries()) {
+        if (await callback(element, index, this)) {
+            arrSet.push(element)
+        } else {
+            complement.push(element)
+        }
+    }
+    return [arrSet, complement]
+}
 
 export default null

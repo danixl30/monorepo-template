@@ -16,6 +16,10 @@ const booleanComp: ComparationUtil<boolean> = (data: any) =>
     typeof data === 'boolean'
 booleanComp.__kind = 'boolean'
 
+const functionComp: ComparationUtil<(...args: any[]) => any> = (data: any) =>
+    typeof data === 'function'
+functionComp.__kind = 'function'
+
 const bigintComp: ComparationUtil<bigint> = (data: any) =>
     typeof data === 'bigint'
 bigintComp.__kind = 'bigint'
@@ -146,4 +150,5 @@ export const ComparationUtils = {
     ArrayFiller: arrFiller,
     Set: setComp,
     Map: mapComp,
+    Function: functionComp,
 }
