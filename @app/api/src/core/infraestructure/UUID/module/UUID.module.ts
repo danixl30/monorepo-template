@@ -1,8 +1,12 @@
 import { ConcreteUUIDGenerator } from '../service/concrete.UUID.generator'
-import { Module } from '@nestjs/common'
+import { ServiceModule } from '../../decorators/service.module'
 
-@Module({
-    providers: [ConcreteUUIDGenerator],
-    exports: [ConcreteUUIDGenerator],
-})
+export const UUID_GEN_NATIVE = 'UUID_GEN_NATIVE'
+
+@ServiceModule([
+    {
+        provide: UUID_GEN_NATIVE,
+        useClass: ConcreteUUIDGenerator,
+    },
+])
 export class UUIDModule {}

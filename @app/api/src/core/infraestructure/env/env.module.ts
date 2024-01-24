@@ -1,12 +1,9 @@
-import { Global, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ConfigurationModule } from '../decorators/config.module.decorator'
 
-@Global()
-@Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-        }),
-    ],
-})
+@ConfigurationModule([
+    ConfigModule.forRoot({
+        isGlobal: true,
+    }),
+])
 export class EnvModule {}

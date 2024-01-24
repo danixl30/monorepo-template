@@ -1,38 +1,160 @@
 import { ExpectationContract } from '@mono/test-utils'
 import assert from 'node:assert'
 
-const empty = () => {
-    console.log('empty')
-}
-
 export const nodeTestingExpectation: ExpectationContract = <T>(value: T) => ({
     equals: (valueToCompare: T) => assert.equal(value, valueToCompare),
     notEquals: (valueToCompare: T) => assert.notEqual(value, valueToCompare),
-    toHaveLenght: empty,
-    toNotHaveLenght: empty,
-    toHavePropety: empty,
-    toNotHavePropety: empty,
-    toCloseTo: empty,
-    toBeDefined: empty,
-    toBeFalsy: empty,
-    toBeGreaterThan: empty,
-    toNotBeGreaterThan: empty,
-    toBeGreaterThanOrEqual: empty,
-    toNotBeGreaterThanOrEqual: empty,
-    toBeLessThan: empty,
-    toNotBeLessThan: empty,
-    toBeLessThanOrEqual: empty,
-    toNotBeLessThanOrEqual: empty,
-    toBeNull: empty,
-    toNotBeNull: empty,
-    toBeTruthy: empty,
-    toBeUndefined: empty,
-    toBeNaN: empty,
-    toNotBeNaN: empty,
-    toDeepEqual: empty,
-    toMatch: empty,
-    toNotMatch: empty,
-    toMathObject: empty,
-    toBeError: empty,
-    toBeErrorAsync: empty,
+    toHaveLenght: (number: number) => {
+        if (
+            !Array.isArray(value) ||
+            typeof (value as any).lenght !== 'number'
+        ) {
+            throw new Error('Value can not have lenght')
+        }
+        assert.strictEqual(value.length, number)
+    },
+    toNotHaveLenght: (number: number) => {
+        if (
+            !Array.isArray(value) ||
+            typeof (value as any).lenght !== 'number'
+        ) {
+            throw new Error('Value can not have lenght')
+        }
+        assert.notStrictEqual(value.length, number)
+    },
+    toHavePropety: (path: string | string[], valueInPath?: any) => {
+        if (!value || typeof value !== 'object') {
+            throw new Error('Not valid object to compare')
+        }
+        if (Array.isArray(path)) {
+            path.map((path) => {
+                assert.strictEqual(true, Object.hasOwn(value as any, path))
+                if (valueInPath) {
+                    assert.strictEqual(value[path], valueInPath)
+                }
+            })
+            return
+        }
+        assert.strictEqual(true, Object.hasOwn(value as any, path))
+        if (valueInPath) {
+            assert.strictEqual(value[path], valueInPath)
+        }
+    },
+    toNotHavePropety: (path: string | string[], valueInPath?: any) => {
+        if (!value || typeof value !== 'object') {
+            throw new Error('Not valid object to compare')
+        }
+        if (Array.isArray(path)) {
+            path.map((path) => {
+                if (valueInPath) {
+                    assert.notStrictEqual(value[path], valueInPath)
+                }
+                assert.strictEqual(false, Object.hasOwn(value as any, path))
+            })
+            return
+        }
+        if (valueInPath) {
+            assert.notStrictEqual(value[path], valueInPath)
+        }
+        assert.strictEqual(false, Object.hasOwn(value as any, path))
+    },
+    toCloseTo: (number: number) => expect(value).toBeCloseTo(number),
+    toBeDefined: () => assert.notStrictEqual(value, undefined),
+    toBeFalsy: () => assert.strictEqual(Boolean(value), false),
+    toBeGreaterThan: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value <= number)
+            throw new Error(`${value} is not greater than ${number}`)
+    },
+    toNotBeGreaterThan: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value > number)
+            throw new Error(`${value} is greater than ${number}`)
+    },
+    toBeGreaterThanOrEqual: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value < number)
+            throw new Error(`${value} is not greater or equal than ${number}`)
+    },
+    toNotBeGreaterThanOrEqual: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value > number)
+            throw new Error(`${value} is greater or equal than ${number}`)
+    },
+    toBeLessThan: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value >= number)
+            throw new Error(`${value} is not less than ${number}`)
+    },
+    toNotBeLessThan: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value < number) throw new Error(`${value} is less than ${number}`)
+    },
+    toBeLessThanOrEqual: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value > number)
+            throw new Error(`${value} is not less or equal than ${number}`)
+    },
+    toNotBeLessThanOrEqual: (number: number | bigint) => {
+        if (typeof value !== 'number')
+            throw new Error('Invalid number to compare')
+        if (value <= number)
+            throw new Error(`${value} is less or equal than ${number}`)
+    },
+    toBeNull: () => assert.strictEqual(value, null),
+    toNotBeNull: () => assert.notStrictEqual(value, null),
+    toBeTruthy: () => assert.strictEqual(Boolean(value), true),
+    toBeUndefined: () => assert.strictEqual(value, undefined),
+    toBeNaN: () => {
+        if (!Number.isNaN(value)) {
+            throw new Error('Number is not NaN')
+        }
+    },
+    toNotBeNaN: () => {
+        if (Number.isNaN(value)) {
+            throw new Error('Number is NaN')
+        }
+    },
+    toDeepEqual: (valueToCompare: object) =>
+        assert.deepStrictEqual(value, valueToCompare),
+    toMatch: (regExp: string | RegExp) => {
+        if (typeof regExp === 'string') {
+            if (typeof value === 'string' && !value.includes(regExp))
+                throw new Error('Pattern not match')
+            return
+        }
+        if (!regExp.test(value as string)) throw new Error('Pattern not match')
+    },
+    toNotMatch: (regExp: string | RegExp) => {
+        if (typeof regExp === 'string') {
+            if (typeof value === 'string' && value.includes(regExp))
+                throw new Error('Pattern match')
+            return
+        }
+        if (regExp.test(value as string)) throw new Error('Pattern match')
+    },
+    toMathObject: (valueToCompare: object) =>
+        assert.deepEqual(value, valueToCompare),
+    toBeError: (error: Error | string) => {
+        try {
+            if (typeof value !== 'function') throw new Error('Not a function')
+            value()
+            throw new Error('The execution not throw an error')
+        } catch (e) {
+            assert.deepEqual(e, error)
+        }
+    },
+    toBeErrorAsync: (error: Error | string) => {
+        if (typeof value !== 'function') throw new Error('Invalid function')
+        value().then(() => {
+            throw new Error('Function not be an error')
+        })
+    },
 })

@@ -43,6 +43,8 @@ export class ServerBuilder implements Builder<INestApplication> {
     }
 
     static async create<T, U extends TypeClass<T>>(appModule: U) {
+        if (!(appModule as any).__isAppModule)
+            throw new Error('Invalid application module')
         const app = await createServer(appModule)
         return new ServerBuilder(app)
     }

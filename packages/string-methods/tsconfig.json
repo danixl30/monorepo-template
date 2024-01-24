@@ -1,9 +1,10 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "moduleResolution": "Node",
         "module": "ESNext",
+        "target": "ESNext",
         "lib": ["dom", "ESNext"],
-        "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./esm",
         "baseUrl": "./lib"
