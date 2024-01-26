@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync, rmdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import chokidar from 'chokidar'
 import ts from 'typescript'
@@ -34,7 +34,7 @@ function visitor(
                     .split('/')
                 current.splice(-1)
                 const currentPath = current.join(
-                    process.platform === 'win32' ? '/' : '\\',
+                    process.platform === 'win32' ? '\\' : '/',
                 )
                 paths[pathMatched + '*'].find((path) => {
                     pathImport = resolve(
@@ -49,7 +49,7 @@ function visitor(
                         fileName = pathItems.at(-1)
                         pathItems.splice(-1)
                         pathImport = pathItems.join(
-                            process.platform === 'win32' ? '/' : '\\',
+                            process.platform === 'win32' ? '\\' : '/',
                         )
                     }
                     pathImport = relative(currentPath, pathImport).replaceAll(
@@ -69,7 +69,7 @@ function visitor(
                     .split('/')
                 current.splice(-1)
                 const currentPath = current.join(
-                    process.platform === 'win32' ? '/' : '\\',
+                    process.platform !== 'win32' ? '/' : '\\',
                 )
                 let path = join(currentPath, pathImport) + '.ts'
                 if (process.platform === 'win32') {
@@ -134,7 +134,7 @@ const transformTest = (
                         .split('/')
                     current.splice(-1)
                     const currentPath = current.join(
-                        process.platform === 'win32' ? '/' : '\\',
+                        process.platform !== 'win32' ? '/' : '\\',
                     )
                     const files = readdirSync(currentPath)
                         .filter((e) => e.endsWith(fileTag))
