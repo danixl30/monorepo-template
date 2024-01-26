@@ -13,7 +13,7 @@ export const initializeResolvers = (currentPath: string) => {
         ),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
@@ -23,7 +23,7 @@ const initializeServices = (currentPath: string) => {
         join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
@@ -33,7 +33,7 @@ export const loadDependencies = (currentPath: string) => {
         join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }

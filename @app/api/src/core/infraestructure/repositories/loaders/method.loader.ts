@@ -11,6 +11,6 @@ export const initializeMethods = () => {
         .join('/')
     const data = glob.sync(join(filePath, `./*.method.js`).replace(/\\/g, '/'))
     return data.map((e) => {
-        require(e)
+        import(e)
     })
 }

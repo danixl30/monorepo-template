@@ -1,10 +1,10 @@
 import glob from 'glob'
-import { join, dirname } from 'node:path'
+import { dirname, join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { fileURLToPath } from 'node:url'
 import { BarrelModule } from '../decorators/barrel.module'
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const initializeModules = () => {
     const data = glob.sync(
@@ -14,7 +14,7 @@ const initializeModules = () => {
         ).replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }

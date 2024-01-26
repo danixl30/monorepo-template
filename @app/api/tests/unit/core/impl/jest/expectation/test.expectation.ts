@@ -1,4 +1,5 @@
 import { ExpectationContract } from '@mono/test-utils'
+import {expect} from '@jest/globals'
 
 export const jestExpectation: ExpectationContract = <T>(value: T) => ({
     equals: (valueToCompare: T) => expect(value).toBe(valueToCompare),
@@ -39,7 +40,7 @@ export const jestExpectation: ExpectationContract = <T>(value: T) => ({
     toMatch: (regExp: string | RegExp) => expect(value).toMatch(regExp),
     toNotMatch: (regExp: string | RegExp) => expect(value).not.toMatch(regExp),
     toMathObject: (valueToCompare: object) =>
-        expect(value).toMatchObject(valueToCompare),
+        expect(value).toMatchObject(valueToCompare as any),
     toBeError: (error: Error | string) => expect(value).toThrow(error),
     toBeErrorAsync: (error: Error | string) =>
         expect(value).rejects.toThrow(error),

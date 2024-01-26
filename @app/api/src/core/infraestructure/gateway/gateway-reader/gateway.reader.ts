@@ -7,7 +7,7 @@ export const initializeGatewayss = (currentPath: string) => {
         join(currentPath, '../../gateways/*.gateway.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }

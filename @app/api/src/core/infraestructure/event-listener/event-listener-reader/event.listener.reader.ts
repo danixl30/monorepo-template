@@ -10,7 +10,7 @@ export const initializeEventListeners = (currentPath: string) => {
         ).replace(/\\/g, '/'),
     )
     return data.map((e) => {
-        const module = require(e)
+        const module = require('file:///' + e)
         return objectValues(module)[0]
     })
 }

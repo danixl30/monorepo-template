@@ -1,6 +1,9 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, rmdirSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
+import chokidar from 'chokidar'
 import ts from 'typescript'
+import { ChildProcess, exec } from 'node:child_process'
+import { rimrafSync } from 'rimraf'
 
 export interface Opts {
     isDeclaration?: boolean
@@ -211,61 +214,130 @@ const CJS_CONFIG: ts.CompilerOptions = {
     declaration: true,
 }
 
-function compile(fileNames: string[], options: ts.CompilerOptions): void {
+function compile(): void {
+    const customTsConfig = process.argv.findIndex((e) => e === '--project') + 1
+    const tsConfigPath = join(
+        process.cwd(),
+        process.argv[customTsConfig || -1] || './tsconfig.json',
+    )
     const host: ts.ParseConfigFileHost = ts.sys as any
     const parsedCmd = ts.getParsedCommandLineOfConfigFile(
-        join(process.cwd(), './tsconfig.json'),
+        tsConfigPath,
         undefined,
         host,
     )
-    if (parsedCmd?.fileNames && parsedCmd.options.rootDir)
-        parsedCmd.fileNames = parsedCmd.fileNames.filter((e) =>
-            e.includes(parsedCmd.options.rootDir || ''),
+    const tsConfigParsed = JSON.parse(readFileSync(tsConfigPath, 'utf8'))
+    const compiler = () => {
+        const parsedCmd = ts.getParsedCommandLineOfConfigFile(
+            tsConfigPath,
+            undefined,
+            host,
         )
-    const program = ts.createProgram(
-        parsedCmd?.fileNames || [],
-        parsedCmd?.options || CJS_CONFIG,
-    )
-    const emitResult = program.emit(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        {
-            after: [transform({})],
-            before: [transformTest],
-        },
-    )
-
-    const allDiagnostics = ts
-        .getPreEmitDiagnostics(program)
-        .concat(emitResult.diagnostics)
-
-    allDiagnostics.forEach((diagnostic) => {
-        if (diagnostic.file) {
-            const { line, character } = ts.getLineAndCharacterOfPosition(
-                diagnostic.file,
-                diagnostic.start!,
+        if (parsedCmd?.fileNames && parsedCmd.options.rootDir)
+            parsedCmd.fileNames = parsedCmd.fileNames.filter((e) =>
+                e.includes(parsedCmd.options.rootDir || ''),
             )
-            const message = ts.flattenDiagnosticMessageText(
-                diagnostic.messageText,
-                '\n',
-            )
-            console.log(
-                `${diagnostic.file.fileName} (${line + 1},${
-                    character + 1
-                }): ${message}`,
-            )
-        } else {
-            console.log(
-                ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
-            )
+        if (parsedCmd?.options.outDir && tsConfigParsed.tscc?.deleteOutDir) {
+            rimrafSync(parsedCmd.options.outDir)
         }
-    })
+        const program = ts.createProgram(
+            parsedCmd?.fileNames || [],
+            parsedCmd?.options || CJS_CONFIG,
+        )
+        const emitResult = program.emit(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            {
+                after: [transform({})],
+                before: [transformTest],
+            },
+        )
 
-    const exitCode = emitResult.emitSkipped ? 1 : 0
+        const allDiagnostics = ts
+            .getPreEmitDiagnostics(program)
+            .concat(emitResult.diagnostics)
+
+        allDiagnostics.forEach((diagnostic) => {
+            if (diagnostic.file) {
+                const { line, character } = ts.getLineAndCharacterOfPosition(
+                    diagnostic.file,
+                    diagnostic.start!,
+                )
+                const message = ts.flattenDiagnosticMessageText(
+                    diagnostic.messageText,
+                    '\n',
+                )
+                console.log(
+                    `${diagnostic.file.fileName} (${line + 1},${
+                        character + 1
+                    }): ${message}`,
+                )
+            } else {
+                console.log(
+                    ts.flattenDiagnosticMessageText(
+                        diagnostic.messageText,
+                        '\n',
+                    ),
+                )
+            }
+        })
+        return emitResult.emitSkipped
+    }
+    if (process.argv.some((e) => e === '-w' || e === '--watch')) {
+        let currentPostJob: ChildProcess | null = null
+        console.log('Compiling in watch mode')
+        const job = () => {
+            if (compiler()) return
+            console.log('Successfull!!!')
+            if (!tsConfigParsed.tscc?.postWatch) return
+            const child = exec(tsConfigParsed.tscc.postWatch)
+            child.stdout?.on('data', (data) =>
+                console.log(
+                    data
+                        .trim()
+                        .split('\n')
+                        .map((e: string) => `[POST] ${e}`)
+                        .join('\n'),
+                ),
+            )
+            currentPostJob = child
+        }
+        const ignoredPaths = [
+            ...((tsConfigParsed.tscc.excludesWatch as string[]) || []),
+            ...((tsConfigParsed.exclude as string[]) || []),
+        ].map((e) => join(parsedCmd?.options.rootDir || process.cwd(), e))
+        if (parsedCmd?.options.outDir)
+            ignoredPaths.push(parsedCmd.options.outDir)
+        ignoredPaths.push(join(process.cwd(), './node_modules'))
+        const callback = () => {
+            currentPostJob?.kill()
+            currentPostJob = null
+            console.log('Recompiling...')
+            job()
+        }
+        job()
+        const watcher = chokidar.watch(
+            [
+                ...(tsConfigParsed.include?.map((e: string) =>
+                    join(parsedCmd?.options.rootDir || process.cwd(), e),
+                ) || [parsedCmd?.options.rootDir] || [process.cwd()]),
+                tsConfigPath,
+                join(process.cwd(), './package.json'),
+            ],
+            {
+                ignoreInitial: true,
+            },
+        )
+        watcher.unwatch(ignoredPaths)
+        watcher.on('all', callback)
+        return
+    }
+    const emitResult = compiler()
+    const exitCode = emitResult ? 1 : 0
     console.log(`Process exiting with code '${exitCode}'.`)
     process.exit(exitCode)
 }
 
-compile(process.argv.slice(2), {})
+compile()

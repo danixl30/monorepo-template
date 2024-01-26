@@ -2,7 +2,7 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "../../../../suits",
   "testEnvironment": "node",
-  "testRegex": ".suit.tests.ts$",
+  "testRegex": ".suit.tests.js$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }

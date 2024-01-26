@@ -2,8 +2,8 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".../../../../../../suits",
   "testEnvironment": "node",
-  "testRegex": ".suit.tests.ts$",
-  "setupFiles": ["../core/impl/jest/runner/setup.ts"],
+  "testRegex": ".suit.tests.js$",
+  "setupFiles": ["../core/impl/jest/runner/setup.js"],
   "transform": {
     "^.+\\.(t|j)s$": [
         "ts-jest", {

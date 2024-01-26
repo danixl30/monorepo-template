@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-    "type": "module",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "postinstall": "tsc"
   },
-    "bin": {
-        "tscc": "./dist/index.js"
-    },
+  "bin": {
+    "tscc": "./dist/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,5 +19,7 @@
     "ttypescript": "^1.5.15"
   },
   "dependencies": {
+    "chokidar": "^3.5.3",
+    "rimraf": "^5.0.5"
   }
 }

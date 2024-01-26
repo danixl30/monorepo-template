@@ -1,6 +1,9 @@
 import { glob } from 'glob'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export const initializeRepositories = (folder: string) => {
     const repositoriesPart = glob.sync(
@@ -15,8 +18,8 @@ export const initializeRepositories = (folder: string) => {
             `../../../../**/infraestructure/repositories/${folder}/*.repository.js`,
         ).replace(/\\/g, '/'),
     )
-    return [...repositoriesUni, ...repositoriesPart].map((e) => {
-        const module = require(e)
+    return [...repositoriesUni, ...repositoriesPart].asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }

@@ -14,7 +14,7 @@ export const loadDependencies = () => {
         join(filePath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
-        const module = await import(e)
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
