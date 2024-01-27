@@ -3,10 +3,7 @@ import '@mono/string-methods'
 import '@mono/number-methods'
 import '@mono/object-utils'
 import glob from 'glob'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
+import { join } from 'node:path'
 
 const importTestSuits = () => {
     const data = glob.sync(
