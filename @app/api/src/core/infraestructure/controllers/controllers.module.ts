@@ -1,10 +1,7 @@
 import glob from 'glob'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
-import { fileURLToPath } from 'node:url'
 import { BarrelModule } from '../decorators/barrel.module'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const initializeModules = () => {
     const data = glob.sync(

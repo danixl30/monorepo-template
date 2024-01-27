@@ -1,4 +1,10 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import {
+    existsSync,
+    mkdirSync,
+    readFileSync,
+    readdirSync,
+    writeFileSync,
+} from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import chokidar from 'chokidar'
 import ts from 'typescript'
@@ -233,6 +239,9 @@ function compile(): void {
             undefined,
             host,
         )
+        const isBrowser = parsedCmd?.options.lib?.some((e) =>
+            e.toLowerCase().includes('dom'),
+        )
         if (parsedCmd?.fileNames && parsedCmd.options.rootDir)
             parsedCmd.fileNames = parsedCmd.fileNames.filter((e) =>
                 e.includes(parsedCmd.options.rootDir || ''),
@@ -244,14 +253,33 @@ function compile(): void {
             parsedCmd?.fileNames || [],
             parsedCmd?.options || CJS_CONFIG,
         )
+        const visitorsBefore = [transformTest]
         const emitResult = program.emit(
             undefined,
-            undefined,
+            (fileName, text) => {
+                if (fileName.endsWith('.js') && !isBrowser) {
+                    text =
+                        `import { fileURLToPath as __fileURLToPathInternal } from "node:url";
+import { dirname as __dirnameInternal } from "node:path";
+import { createRequire as __createRequireInternal } from "node:module";
+const __filename = import.meta.filename || __fileURLToPathInternal(import.meta.url);
+const __dirname = import.meta.dirname || __dirnameInternal(__filename);
+if (!import.meta.filename) import.meta.filename = __filename;
+if (!import.meta.dirname) import.meta.filename = __dirname;
+const require = __createRequireInternal(import.meta.url);\n` + text
+                }
+                const elements = fileName.replaceAll('\\', '/').split('/')
+                elements.splice(-1)
+                mkdirSync(elements.join('/'), {
+                    recursive: true,
+                })
+                writeFileSync(fileName, text)
+            },
             undefined,
             undefined,
             {
                 after: [transform({})],
-                before: [transformTest],
+                before: visitorsBefore,
             },
         )
 
