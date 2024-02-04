@@ -77,6 +77,9 @@ importers:
       '@mono/pattern-matching':
         specifier: workspace:*
         version: link:../../packages/pattern-matching
+      '@mono/promise-methods':
+        specifier: workspace:*
+        version: link:../../packages/promise-methods
       '@mono/string-methods':
         specifier: workspace:*
         version: link:../../packages/string-methods
@@ -282,6 +285,12 @@ importers:
         version: link:../compiler
 
   packages/pattern-matching:
+    devDependencies:
+      '@mono/compiler':
+        specifier: '*'
+        version: link:../compiler
+
+  packages/promise-methods:
     devDependencies:
       '@mono/compiler':
         specifier: '*'
