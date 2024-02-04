@@ -1,10 +1,10 @@
-import glob from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { BarrelModule } from '../decorators/barrel.module'
 
 const initializeModules = () => {
-    const data = glob.sync(
+    const data = globSync(
         join(
             __dirname,
             '../../../**/infraestructure/modules/resolvers/module.js',

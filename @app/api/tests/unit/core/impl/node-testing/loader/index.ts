@@ -1,4 +1,4 @@
-import glob from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
@@ -9,7 +9,7 @@ export const initializeTests = () => {
         .split('/')
         .toSpliced(-1)
         .join('/')
-    const data: string[] = glob.sync(
+    const data: string[] = globSync(
         join(filePath, './tests/*.test.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {

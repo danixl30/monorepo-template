@@ -2,6 +2,7 @@
   "name": "monorepo",
   "version": "1.0.0",
   "description": "Monorepo template with pnpm, typescript, nest and react",
+  "type": "module",
   "scripts": {
     "start:dev": "pnpm --recursive --parallel --stream run start:dev",
     "build": "pnpm --recursive --parallel --stream run build",
@@ -36,7 +37,7 @@
     "husky": "^8.0.3",
     "prettier": "^2.3.2",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^5.2.0",
+    "typescript": "^5.3.3",
     "vitest": "^0.34.6"
   }
 }

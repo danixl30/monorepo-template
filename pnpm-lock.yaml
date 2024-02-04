@@ -57,7 +57,7 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       typescript:
-        specifier: ^5.2.0
+        specifier: ^5.3.3
         version: 5.3.3
       vitest:
         specifier: ^0.34.6
@@ -114,8 +114,8 @@ importers:
         specifier: ^0.14.0
         version: 0.14.0
       glob:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^10.3.10
+        version: 10.3.10
       js-sha256:
         specifier: ^0.9.0
         version: 0.9.0

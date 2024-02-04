@@ -8,18 +8,64 @@ import {
 import { join, relative, resolve } from 'node:path'
 import chokidar from 'chokidar'
 import ts from 'typescript'
-import { ChildProcess, exec } from 'node:child_process'
+import { ChildProcess, exec, spawn } from 'node:child_process'
 import { rimrafSync } from 'rimraf'
 
 export interface Opts {
     isDeclaration?: boolean
+    typeCheker: ts.TypeChecker
 }
 
-function visitor(
-    { isDeclaration }: Opts,
-    ctx: ts.TransformationContext,
-    sf: ts.SourceFile,
-) {
+const transformToReplaceImportJson =
+    (_opts: Opts) =>
+        (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> =>
+        ((sf: ts.SourceFile): ts.Node | undefined => {
+            const testVisitor = (
+                ctx: ts.TransformationContext,
+                _sf: ts.SourceFile,
+            ) => {
+                const visitor = (node: ts.Node): ts.Node | undefined => {
+                    if (
+                        ts.isImportDeclaration(node) &&
+                        node.importClause &&
+                        node.pos
+                    ) {
+                        try {
+                            const pathImport: string = (
+                                node.moduleSpecifier as any
+                            ).text
+                            const defaultClause = node.importClause
+                                ?.getText()
+                                .trim()
+                            if (
+                                pathImport.endsWith('.json') &&
+                                !defaultClause.endsWith('}')
+                            ) {
+                                return ctx.factory.createVariableDeclaration(
+                                    'const ' + defaultClause,
+                                    undefined,
+                                    undefined,
+                                    ctx.factory.createCallExpression(
+                                        ctx.factory.createIdentifier('require'),
+                                        undefined,
+                                        [
+                                            ctx.factory.createStringLiteral(
+                                                pathImport,
+                                            ),
+                                        ],
+                                    ),
+                                )
+                            }
+                        } catch (_e) {}
+                    }
+                    return ts.visitEachChild(node, visitor, ctx)
+                }
+                return visitor
+            }
+            return ts.visitNode(sf, testVisitor(ctx, sf))
+        }) as unknown as any
+
+function visitor(_opt: Opts, ctx: ts.TransformationContext, sf: ts.SourceFile) {
     const paths = ctx.getCompilerOptions().paths || {}
     const visitor: ts.Visitor = (node: ts.Node): ts.Node | undefined => {
         if (
@@ -30,6 +76,7 @@ function visitor(
                 .getText(sf)
                 .replaceAll("'", '')
                 .replaceAll('"', '')
+            const isJson = pathImport.endsWith('.json')
             const pathMatched = Object.keys(paths)
                 .map((e) => e.replace('*', ''))
                 .find((e) => pathImport.startsWith(e))
@@ -40,22 +87,32 @@ function visitor(
                     .split('/')
                 current.splice(-1)
                 const currentPath = current.join(
-                    process.platform === 'win32' ? '\\' : '/',
+                    process.platform === 'win32' ? '/' : '\\',
                 )
                 paths[pathMatched + '*'].find((path) => {
                     pathImport = resolve(
                         baseUrl,
                         pathImport.replace(pathMatched, path.replace('*', '')),
                     )
+                    if (
+                        !pathImport.endsWith('.js') &&
+                        !pathImport.endsWith('.ts') &&
+                        !isJson
+                    )
+                        pathImport += '.ts'
+                    if (pathImport.endsWith('.js')) {
+                        pathImport = pathImport.slice(0, -3)
+                        pathImport += '.ts'
+                    }
                     let fileName: string | undefined
-                    if (existsSync(pathImport + '.ts')) {
+                    if (existsSync(pathImport)) {
                         const pathItems = pathImport
                             .replaceAll('\\', '/')
                             .split('/')
                         fileName = pathItems.at(-1)
                         pathItems.splice(-1)
                         pathImport = pathItems.join(
-                            process.platform === 'win32' ? '\\' : '/',
+                            process.platform === 'win32' ? '/' : '\\',
                         )
                     }
                     pathImport = relative(currentPath, pathImport).replaceAll(
@@ -70,21 +127,23 @@ function visitor(
                 })
             }
             if (pathImport.startsWith('./') || pathImport.startsWith('../')) {
+                if (pathImport.endsWith('.js') || pathImport.endsWith('.ts'))
+                    pathImport = pathImport.slice(0, -3)
                 const current = ((sf as any).resolvedPath || sf.fileName)
                     .replaceAll('\\', '/')
                     .split('/')
                 current.splice(-1)
                 const currentPath = current.join(
-                    process.platform !== 'win32' ? '/' : '\\',
+                    process.platform === 'win32' ? '/' : '\\',
                 )
-                let path = join(currentPath, pathImport) + '.ts'
+                let path = join(currentPath, pathImport)
                 if (process.platform === 'win32') {
                     path = path.replaceAll('/', '\\')
                     path = path.charAt(0).toUpperCase() + path.slice(1)
                 }
-                if (existsSync(path)) {
+                if (existsSync(path + '.ts')) {
                     pathImport += '.js'
-                } else {
+                } else if (!isJson) {
                     pathImport += '/index.js'
                 }
             }
@@ -115,86 +174,232 @@ function visitor(
     return visitor
 }
 
-const transformTest = (
-    ctx: ts.TransformationContext,
-): ts.Transformer<ts.SourceFile> => {
-    return ((sf: ts.SourceFile) => {
-        const importsToAdd: string[] = []
-        const testVisitor = (
-            ctx: ts.TransformationContext,
-            sf: ts.SourceFile,
-        ) => {
-            const visitor = (node: ts.Node): ts.Node | undefined => {
-                if (
-                    ts.isExportDeclaration(node) &&
-                    sf.fileName.endsWith('/index.ts')
-                ) {
-                    const fileTag =
-                        node.moduleSpecifier
-                            ?.getText()
-                            .replace('./', '')
-                            .replaceAll("'", '')
-                            .replaceAll('"', '') + '.extension.ts'
-                    const current = (sf as any).resolvedPath
-                        .replaceAll('\\', '/')
-                        .split('/')
-                    current.splice(-1)
-                    const currentPath = current.join(
-                        process.platform !== 'win32' ? '/' : '\\',
-                    )
-                    const files = readdirSync(currentPath)
-                        .filter((e) => e.endsWith(fileTag))
-                        .map((e) => './' + e.replace('.ts', ''))
-                    if (!files.length) {
+function getTypeOfNode(
+    node: ts.Node,
+    typeCheker: ts.TypeChecker,
+): ts.Type | undefined {
+    if (ts.isCallExpression(node)) {
+        const signature = typeCheker.getResolvedSignature(node)
+        if (signature) {
+            return signature.getReturnType()
+        }
+    }
+    if (ts.isNewExpression(node)) {
+        const type = typeCheker.getTypeAtLocation(node.expression)
+        if (type) {
+            const prototypeSymbol = type.getProperty('prototype')
+            return typeCheker.getTypeOfSymbol(prototypeSymbol!)
+        }
+    }
+    const type = typeCheker.getSymbolAtLocation(node)
+    const declaration = type?.valueDeclaration
+    if (declaration && ts.isParameter(declaration) && declaration.type) {
+        return typeCheker.getTypeAtLocation(declaration.type)
+    }
+    if (type && typeCheker.getTypeOfSymbol(type).getProperties().length) {
+        return typeCheker.getTypeOfSymbol(type)
+    }
+    if (declaration && ts.isVariableDeclaration(declaration)) {
+        return getTypeOfNode(declaration.initializer!, typeCheker)
+    }
+    return undefined
+}
+
+function getPropsOfNode(
+    node: ts.Node,
+    typeCheker: ts.TypeChecker,
+    propToFind: string,
+): ts.Type | undefined {
+    const type = getTypeOfNode(node, typeCheker)
+    const symbol = type?.getProperty(propToFind)
+    return symbol ? typeCheker.getTypeOfSymbol(symbol) : undefined
+}
+
+function validReturnTypeOfMethod(
+    type: ts.Type | undefined,
+    typeChecker: ts.TypeChecker,
+) {
+    if (!type?.symbol.valueDeclaration) return false
+    const func2Type = typeChecker.getTypeOfSymbolAtLocation(
+        type.symbol,
+        type.symbol.valueDeclaration,
+    )
+    const func2Signature = typeChecker.getSignaturesOfType(
+        func2Type,
+        ts.SignatureKind.Call,
+    )[0]
+    return (
+        typeChecker.typeToString(func2Signature.getReturnType()) === 'boolean'
+    )
+}
+
+const operatorsDictionary: Record<string, string> = {
+    '<': 'lessThan',
+    '>': 'lessThan',
+    '<=': 'lessThanEqual',
+    '>=': 'lessThanEqual',
+}
+
+const transformTest =
+    ({ typeCheker }: Opts) =>
+        (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
+            return ((sf: ts.SourceFile) => {
+                const importsToAdd: string[] = []
+                const testVisitor = (
+                    ctx: ts.TransformationContext,
+                    sf: ts.SourceFile,
+                ) => {
+                    const visitor = (node: ts.Node): ts.Node | undefined => {
+                        if (
+                            ts.isBinaryExpression(node) &&
+                        (node.operatorToken.getFullText().trim() === '==' ||
+                            node.operatorToken.getFullText().trim() === '!=') &&
+                        validReturnTypeOfMethod(
+                            getPropsOfNode(node.left, typeCheker, 'equals'),
+                            typeCheker,
+                        ) &&
+                        validReturnTypeOfMethod(
+                            getPropsOfNode(node.right, typeCheker, 'equals'),
+                            typeCheker,
+                        )
+                        ) {
+                            const isNotOp =
+                            node.operatorToken.getFullText().trim() === '!='
+                            const newNode = ctx.factory.createCallExpression(
+                                ctx.factory.createPropertyAccessChain(
+                                    node.left,
+                                    ctx.factory.createToken(
+                                        ts.SyntaxKind.QuestionDotToken,
+                                    ),
+                                    'equals',
+                                ),
+                                [],
+                                [node.right],
+                            )
+                            return ts.visitEachChild(
+                                isNotOp
+                                    ? ctx.factory.createLogicalNot(newNode)
+                                    : newNode,
+                                visitor,
+                                ctx,
+                            )
+                        }
+                        if (
+                            ts.isBinaryExpression(node) &&
+                        Object.keys(operatorsDictionary).includes(
+                            node.operatorToken.getFullText().trim(),
+                        ) &&
+                        validReturnTypeOfMethod(
+                            getPropsOfNode(
+                                node.left,
+                                typeCheker,
+                                operatorsDictionary[
+                                    node.operatorToken.getFullText().trim()
+                                ],
+                            ),
+                            typeCheker,
+                        ) &&
+                        validReturnTypeOfMethod(
+                            getPropsOfNode(
+                                node.right,
+                                typeCheker,
+                                operatorsDictionary[
+                                    node.operatorToken.getFullText().trim()
+                                ],
+                            ),
+                            typeCheker,
+                        )
+                        ) {
+                            const operator = node.operatorToken.getFullText().trim()
+                            const isGreater = operator.startsWith('>')
+                            const newNode = ctx.factory.createCallExpression(
+                                ctx.factory.createPropertyAccessChain(
+                                    isGreater ? node.right : node.left,
+                                    ctx.factory.createToken(
+                                        ts.SyntaxKind.QuestionDotToken,
+                                    ),
+                                    operatorsDictionary[
+                                        node.operatorToken.getFullText().trim()
+                                    ],
+                                ),
+                                [],
+                                [isGreater ? node.left : node.right],
+                            )
+                            return ts.visitEachChild(newNode, visitor, ctx)
+                        }
+                        if (
+                            ts.isExportDeclaration(node) &&
+                        sf.fileName.endsWith('/index.ts')
+                        ) {
+                            let moduleSpecifier =
+                            node.moduleSpecifier
+                                ?.getText()
+                                .replaceAll("'", '')
+                                .replaceAll('"', '') || ''
+                            if (moduleSpecifier.endsWith('.ts'))
+                                moduleSpecifier = moduleSpecifier.slice(0, -3)
+                            const fileTag =
+                            moduleSpecifier.replace('./', '') + '.extension.ts'
+                            const current = (sf as any).resolvedPath
+                                .replaceAll('\\', '/')
+                                .split('/')
+                            current.splice(-1)
+                            const currentPath = current.join(
+                                process.platform === 'win32' ? '/' : '\\',
+                            )
+                            const files = readdirSync(currentPath)
+                                .filter((e) => e.endsWith(fileTag))
+                                .map((e) => './' + e.slice(0, -3))
+                            if (!files.length) {
+                                return ts.visitEachChild(node, visitor, ctx)
+                            }
+                            const printer = ts.createPrinter({
+                                newLine: ts.NewLineKind.LineFeed,
+                            })
+                            const imports = files
+                                .map((e) =>
+                                    ctx.factory.createImportDeclaration(
+                                        undefined,
+                                        undefined,
+                                    ts.factory.createStringLiteral(e) as any,
+                                    ),
+                                )
+                                .map((e) => {
+                                    return printer.printNode(
+                                        ts.EmitHint.Unspecified,
+                                        e,
+                                        sf,
+                                    )
+                                })
+                                .map((e) => (e += '\n'))
+                            importsToAdd.push(...imports)
+                        }
                         return ts.visitEachChild(node, visitor, ctx)
                     }
-                    const printer = ts.createPrinter({
-                        newLine: ts.NewLineKind.LineFeed,
-                    })
-                    const imports = files
-                        .map((e) =>
-                            ctx.factory.createImportDeclaration(
-                                undefined,
-                                undefined,
-                                ts.factory.createStringLiteral(e) as any,
-                            ),
-                        )
-                        .map((e) => {
-                            return printer.printNode(
-                                ts.EmitHint.Unspecified,
-                                e,
-                                sf,
-                            )
-                        })
-                        .map((e) => (e += '\n'))
-                    importsToAdd.push(...imports)
+                    return visitor
                 }
-                return ts.visitEachChild(node, visitor, ctx)
-            }
-            return visitor
+                const node = ts.visitNode(sf, testVisitor(ctx, sf))
+                if (importsToAdd.length) {
+                    const normalVisitor = (node: ts.Node) =>
+                        ts.visitEachChild(node, normalVisitor, ctx)
+                    const newSource = ts.createSourceFile(
+                        sf.fileName,
+                        importsToAdd.join('') + sf.getFullText(),
+                        {
+                            ...ctx.getCompilerOptions(),
+                            languageVersion:
+                            ctx.getCompilerOptions().target ||
+                            ts.ScriptTarget.ESNext,
+                        },
+                        true,
+                    )
+                    return ts.visitNode(newSource, (node) =>
+                        ts.visitEachChild(node, normalVisitor, ctx),
+                    )
+                }
+                return node
+            }) as unknown as any
         }
-        const node = ts.visitNode(sf, testVisitor(ctx, sf))
-        if (importsToAdd.length) {
-            const normalVisitor: any = (node: ts.Node) =>
-                ts.visitEachChild(node, normalVisitor, ctx)
-            const newSource = ts.createSourceFile(
-                sf.fileName,
-                importsToAdd.join('') + sf.getFullText(),
-                {
-                    ...ctx.getCompilerOptions(),
-                    languageVersion:
-                        ctx.getCompilerOptions().target ||
-                        ts.ScriptTarget.ESNext,
-                },
-                true,
-            )
-            return ts.visitNode(newSource, (node) =>
-                ts.visitEachChild(node, normalVisitor, ctx),
-            )
-        }
-        return node
-    }) as unknown as any
-}
 
 export function transform(opts: Opts): ts.TransformerFactory<ts.SourceFile> {
     return (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
@@ -220,24 +425,71 @@ const CJS_CONFIG: ts.CompilerOptions = {
     declaration: true,
 }
 
+function createCompilerHost(options: ts.CompilerOptions): ts.CompilerHost {
+    const host = ts.createCompilerHost(options)
+    host.resolveModuleNames = resolveModuleNames
+    return host
+
+    function fileExists(fileName: string): boolean {
+        return ts.sys.fileExists(fileName)
+    }
+
+    function readFile(fileName: string): string | undefined {
+        return ts.sys.readFile(fileName)
+    }
+
+    function resolveModuleNames(
+        moduleNames: string[],
+        containingFile: string,
+    ): (ts.ResolvedModule | undefined)[] {
+        const resolvedModules: (ts.ResolvedModule | undefined)[] = []
+        for (const moduleName of moduleNames) {
+            resolvedModules.push(
+                ts.resolveModuleName(
+                    moduleName.endsWith('.ts')
+                        ? moduleName.slice(0, -3) + '.js'
+                        : moduleName,
+                    containingFile,
+                    options,
+                    {
+                        fileExists,
+                        readFile,
+                    },
+                ).resolvedModule ||
+                    ts.resolveModuleName(
+                        moduleName + '.js',
+                        containingFile,
+                        options,
+                        {
+                            fileExists,
+                            readFile,
+                        },
+                    ).resolvedModule ||
+                    undefined,
+            )
+        }
+        return resolvedModules
+    }
+}
+
 function compile(): void {
     const customTsConfig = process.argv.findIndex((e) => e === '--project') + 1
     const tsConfigPath = join(
         process.cwd(),
         process.argv[customTsConfig || -1] || './tsconfig.json',
     )
-    const host: ts.ParseConfigFileHost = ts.sys as any
+    const host1: ts.ParseConfigFileHost = ts.sys as any
     const parsedCmd = ts.getParsedCommandLineOfConfigFile(
         tsConfigPath,
         undefined,
-        host,
+        host1,
     )
     const tsConfigParsed = JSON.parse(readFileSync(tsConfigPath, 'utf8'))
     const compiler = () => {
         const parsedCmd = ts.getParsedCommandLineOfConfigFile(
             tsConfigPath,
             undefined,
-            host,
+            host1,
         )
         const isBrowser = parsedCmd?.options.lib?.some((e) =>
             e.toLowerCase().includes('dom'),
@@ -249,24 +501,55 @@ function compile(): void {
         if (parsedCmd?.options.outDir && tsConfigParsed.tscc?.deleteOutDir) {
             rimrafSync(parsedCmd.options.outDir)
         }
+        const host = createCompilerHost(
+            {
+                ...parsedCmd?.options,
+                allowImportingTsExtensions: false,
+            } || CJS_CONFIG,
+        )
         const program = ts.createProgram(
             parsedCmd?.fileNames || [],
-            parsedCmd?.options || CJS_CONFIG,
+            {
+                ...parsedCmd?.options,
+                allowImportingTsExtensions: false,
+            } || CJS_CONFIG,
+            host,
         )
-        const visitorsBefore = [transformTest]
+        const visitorsBefore = [
+            transformTest({
+                typeCheker: program.getTypeChecker(),
+            }),
+        ]
+        const [major] = process.versions.node.split('.').map(Number)
+        const transformsAfter = [
+            transform({
+                typeCheker: program.getTypeChecker(),
+            }),
+        ]
+        if (major < 20 && !isBrowser)
+            transformsAfter.push(
+                transformToReplaceImportJson({
+                    typeCheker: program.getTypeChecker(),
+                }),
+            )
         const emitResult = program.emit(
             undefined,
             (fileName, text) => {
                 if (fileName.endsWith('.js') && !isBrowser) {
                     text =
-                        `import { fileURLToPath as __fileURLToPathInternal } from "node:url";
+                        `import { fileURLToPath as __fileURLToPathInternal, pathToFileURL as __pathToFileURLInternal } from "node:url";
 import { dirname as __dirnameInternal } from "node:path";
 import { createRequire as __createRequireInternal } from "node:module";
 const __filename = import.meta.filename || __fileURLToPathInternal(import.meta.url);
 const __dirname = import.meta.dirname || __dirnameInternal(__filename);
 if (!import.meta.filename) import.meta.filename = __filename;
 if (!import.meta.dirname) import.meta.filename = __dirname;
-const require = __createRequireInternal(import.meta.url);\n` + text
+const require = __createRequireInternal(import.meta.url);
+import.meta.resolve = function (path, base) {
+    if (base)
+    return __pathToFileURLInternal(__createRequireInternal(base).resolve(path)).href;
+    return __pathToFileURLInternal(require.resolve(path)).href;
+}\n` + text
                 }
                 const elements = fileName.replaceAll('\\', '/').split('/')
                 elements.splice(-1)
@@ -278,7 +561,7 @@ const require = __createRequireInternal(import.meta.url);\n` + text
             undefined,
             undefined,
             {
-                after: [transform({})],
+                after: transformsAfter,
                 before: visitorsBefore,
             },
         )
@@ -315,12 +598,13 @@ const require = __createRequireInternal(import.meta.url);\n` + text
     }
     if (process.argv.some((e) => e === '-w' || e === '--watch')) {
         let currentPostJob: ChildProcess | null = null
-        console.log('Compiling in watch mode')
+        console.log('Compiling in watch mode...')
         const job = () => {
             if (compiler()) return
             console.log('Successfull!!!')
             if (!tsConfigParsed.tscc?.postWatch) return
             const child = exec(tsConfigParsed.tscc.postWatch)
+            currentPostJob = child
             child.stdout?.on('data', (data) =>
                 console.log(
                     data
@@ -330,7 +614,12 @@ const require = __createRequireInternal(import.meta.url);\n` + text
                         .join('\n'),
                 ),
             )
-            currentPostJob = child
+            // child.stdout?.on('error', (data) => console.error('[POST] ', data))
+            child.stderr?.on('data', function (data) {
+                console.error('[POST] stderr: ' + data.toString())
+                currentPostJob?.kill()
+                currentPostJob = null
+            })
         }
         const ignoredPaths = [
             ...((tsConfigParsed.tscc.excludesWatch as string[]) || []),
@@ -340,9 +629,23 @@ const require = __createRequireInternal(import.meta.url);\n` + text
             ignoredPaths.push(parsedCmd.options.outDir)
         ignoredPaths.push(join(process.cwd(), './node_modules'))
         const callback = () => {
-            currentPostJob?.kill()
-            currentPostJob = null
             console.log('Recompiling...')
+            currentPostJob?.removeAllListeners()
+            currentPostJob?.stderr?.destroy()
+            if (currentPostJob?.pid && process.platform === 'win32') {
+                spawn('taskkill', [
+                    '/pid',
+                    String(currentPostJob.pid),
+                    '/f',
+                    '/t',
+                ])
+            } else {
+                currentPostJob?.stdout?.destroy()
+                currentPostJob?.stdin?.destroy()
+                currentPostJob?.stderr?.destroy()
+                currentPostJob?.kill('SIGKILL')
+            }
+            currentPostJob = null
             job()
         }
         job()
