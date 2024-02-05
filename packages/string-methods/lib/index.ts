@@ -23,8 +23,22 @@ declare global {
         filterWithComplement(callback: CallBackFilterSync): [string, string]
         with(index: number, element: string): string
         replaceRight(pattern: string | RegExp, value: string): string
+        capitalize(): string
+        capitalizeFirst(): string
     }
 }
+
+if (!String.prototype.capitalizeFirst)
+    String.prototype.capitalizeFirst = function (this: string) {
+        return this.charAt(0).toUpperCase() + this.slice(1)
+    }
+
+if (!String.prototype.capitalize)
+    String.prototype.capitalize = function (this: string) {
+        return this.split(' ')
+            .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+            .join(' ')
+    }
 
 if (!String.prototype.replaceRight)
     String.prototype.replaceRight = function (this: string, pattern, value) {
