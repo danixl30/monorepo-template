@@ -230,6 +230,7 @@ function validReturnTypeOfMethod(
     )[0]
     return (
         typeChecker.typeToString(func2Signature.getReturnType()) === 'boolean'
+        && func2Signature.getParameters().length === 1
     )
 }
 

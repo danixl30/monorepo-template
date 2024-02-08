@@ -25,8 +25,29 @@ declare global {
         replaceRight(pattern: string | RegExp, value: string): string
         capitalize(): string
         capitalizeFirst(): string
+        trimCharcter(char: string): string
+        trimCharcterStart(char: string): string
+        trimCharcterEnd(char: string): string
     }
 }
+
+if (!String.prototype.trimCharcter)
+    String.prototype.trimCharcter = function (this: string, char: string) {
+        const regex = new RegExp(`(^[${char}]*)|([${char}]*$)`, 'g')
+        return this.replaceAll(regex, '')
+    }
+
+if (!String.prototype.trimCharcterStart)
+    String.prototype.trimCharcterStart = function (this: string, char: string) {
+        const regex = new RegExp(`(^[${char}]*)`, 'g')
+        return this.replaceAll(regex, '')
+    }
+
+if (!String.prototype.trimCharcterEnd)
+    String.prototype.trimCharcterEnd = function (this: string, char: string) {
+        const regex = new RegExp(`([${char}]*$)`, 'g')
+        return this.replaceAll(regex, '')
+    }
 
 if (!String.prototype.capitalizeFirst)
     String.prototype.capitalizeFirst = function (this: string) {
