@@ -100,6 +100,9 @@ declare global {
         get lastIndex(): number
         get last(): T
         binarySearch(compare: (a: T) => number): [T, number] | undefined
+        asyncBinarySearch(
+            compare: (a: T) => Promise<number>,
+        ): Promise<[T, number] | undefined>
         groupBy<T>(callback: (ele: T, index: number) => string | number): {
             [key: string | number]: T[]
         }
@@ -176,6 +179,20 @@ if (!Array.prototype.binarySearch)
         while (left <= right) {
             const mid = Math.floor((left + right) / 2)
             const compareResult = compare(this[mid])
+            if (compareResult === 0) return [this[mid], mid]
+            if (compareResult < 0) right = mid - 1
+            left = mid + 1
+        }
+        return undefined
+    }
+
+if (!Array.prototype.asyncBinarySearch)
+    Array.prototype.asyncBinarySearch = async function (this: any[], compare) {
+        let left = 0,
+            right = this.lastIndex
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2)
+            const compareResult = await compare(this[mid])
             if (compareResult === 0) return [this[mid], mid]
             if (compareResult < 0) right = mid - 1
             left = mid + 1

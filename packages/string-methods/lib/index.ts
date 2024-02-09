@@ -28,8 +28,46 @@ declare global {
         trimCharcter(char: string): string
         trimCharcterStart(char: string): string
         trimCharcterEnd(char: string): string
+        at(index: number): string | undefined
+        get lastIndex(): number
+        get last(): string
+        pop(n?: number): string
+        shift(n?: number): string
     }
 }
+
+if (!String.prototype.pop)
+    String.prototype.pop = function (this: string, n: number = 1) {
+        const elements = this.split('')
+        new Array(n).fill(0).forEach(() => elements.pop())
+        return elements.join('')
+    }
+
+if (!String.prototype.shift)
+    String.prototype.shift = function (this: string, n: number = 1) {
+        const elements = this.split('')
+        new Array(n).fill(0).forEach(() => elements.shift())
+        return elements.join('')
+    }
+
+if (!String.prototype.lastIndex)
+    Object.defineProperty(String.prototype, 'lastIndex', {
+        get(this: string) {
+            return this.length - 1
+        },
+    })
+
+if (!String.prototype.last)
+    Object.defineProperty(String.prototype, 'last', {
+        get(this: string) {
+            return this.at(-1)
+        },
+    })
+
+if (!String.prototype.at)
+    String.prototype.at = function (this: string, index: number) {
+        return this.split('').at(index)
+    }
 
 if (!String.prototype.trimCharcter)
     String.prototype.trimCharcter = function (this: string, char: string) {
