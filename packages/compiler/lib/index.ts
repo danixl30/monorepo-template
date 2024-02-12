@@ -32,7 +32,7 @@ import.meta.resolve = function (path, base) {
 
 const transformToReplaceImportJson =
     (_opts: Opts) =>
-        (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> =>
+    (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> =>
         ((sf: ts.SourceFile): ts.Node | undefined => {
             const testVisitor = (
                 ctx: ts.TransformationContext,
@@ -257,16 +257,16 @@ const operatorsDictionary: Record<string, string> = {
 
 const transformOperatorsAndExtensions =
     ({ typeCheker }: Opts) =>
-        (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
-            return ((sf: ts.SourceFile) => {
-                const importsToAdd: string[] = []
-                const testVisitor = (
-                    ctx: ts.TransformationContext,
-                    sf: ts.SourceFile,
-                ) => {
-                    const visitor = (node: ts.Node): ts.Node | undefined => {
-                        if (
-                            ts.isBinaryExpression(node) &&
+    (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
+        return ((sf: ts.SourceFile) => {
+            const importsToAdd: string[] = []
+            const testVisitor = (
+                ctx: ts.TransformationContext,
+                sf: ts.SourceFile,
+            ) => {
+                const visitor = (node: ts.Node): ts.Node | undefined => {
+                    if (
+                        ts.isBinaryExpression(node) &&
                         (node.operatorToken.getFullText().trim() === '==' ||
                             node.operatorToken.getFullText().trim() === '!=') &&
                         validReturnTypeOfMethod(
@@ -277,30 +277,30 @@ const transformOperatorsAndExtensions =
                             getPropsOfNode(node.right, typeCheker, 'equals'),
                             typeCheker,
                         )
-                        ) {
-                            const isNotOp =
+                    ) {
+                        const isNotOp =
                             node.operatorToken.getFullText().trim() === '!='
-                            const newNode = ctx.factory.createCallExpression(
-                                ctx.factory.createPropertyAccessChain(
-                                    node.left,
-                                    ctx.factory.createToken(
-                                        ts.SyntaxKind.QuestionDotToken,
-                                    ),
-                                    'equals',
+                        const newNode = ctx.factory.createCallExpression(
+                            ctx.factory.createPropertyAccessChain(
+                                node.left,
+                                ctx.factory.createToken(
+                                    ts.SyntaxKind.QuestionDotToken,
                                 ),
-                                [],
-                                [node.right],
-                            )
-                            return ts.visitEachChild(
-                                isNotOp
-                                    ? ctx.factory.createLogicalNot(newNode)
-                                    : newNode,
-                                visitor,
-                                ctx,
-                            )
-                        }
-                        if (
-                            ts.isBinaryExpression(node) &&
+                                'equals',
+                            ),
+                            [],
+                            [node.right],
+                        )
+                        return ts.visitEachChild(
+                            isNotOp
+                                ? ctx.factory.createLogicalNot(newNode)
+                                : newNode,
+                            visitor,
+                            ctx,
+                        )
+                    }
+                    if (
+                        ts.isBinaryExpression(node) &&
                         Object.keys(operatorsDictionary).includes(
                             node.operatorToken.getFullText().trim(),
                         ) &&
@@ -324,97 +324,97 @@ const transformOperatorsAndExtensions =
                             ),
                             typeCheker,
                         )
-                        ) {
-                            const operator = node.operatorToken.getFullText().trim()
-                            const isGreater = operator.startsWith('>')
-                            const newNode = ctx.factory.createCallExpression(
-                                ctx.factory.createPropertyAccessChain(
-                                    isGreater ? node.right : node.left,
-                                    ctx.factory.createToken(
-                                        ts.SyntaxKind.QuestionDotToken,
-                                    ),
-                                    operatorsDictionary[
-                                        node.operatorToken.getFullText().trim()
-                                    ],
+                    ) {
+                        const operator = node.operatorToken.getFullText().trim()
+                        const isGreater = operator.startsWith('>')
+                        const newNode = ctx.factory.createCallExpression(
+                            ctx.factory.createPropertyAccessChain(
+                                isGreater ? node.right : node.left,
+                                ctx.factory.createToken(
+                                    ts.SyntaxKind.QuestionDotToken,
                                 ),
-                                [],
-                                [isGreater ? node.left : node.right],
-                            )
-                            return ts.visitEachChild(newNode, visitor, ctx)
-                        }
-                        if (
-                            ts.isExportDeclaration(node) &&
+                                operatorsDictionary[
+                                    node.operatorToken.getFullText().trim()
+                                ],
+                            ),
+                            [],
+                            [isGreater ? node.left : node.right],
+                        )
+                        return ts.visitEachChild(newNode, visitor, ctx)
+                    }
+                    if (
+                        ts.isExportDeclaration(node) &&
                         sf.fileName.endsWith('/index.ts')
-                        ) {
-                            let moduleSpecifier =
+                    ) {
+                        let moduleSpecifier =
                             node.moduleSpecifier
                                 ?.getText()
                                 .replaceAll("'", '')
                                 .replaceAll('"', '') || ''
-                            if (moduleSpecifier.endsWith('.ts'))
-                                moduleSpecifier = moduleSpecifier.slice(0, -3)
-                            const fileTag =
+                        if (moduleSpecifier.endsWith('.ts'))
+                            moduleSpecifier = moduleSpecifier.slice(0, -3)
+                        const fileTag =
                             moduleSpecifier.replace('./', '') + '.extension.ts'
-                            const current = (sf as any).resolvedPath
-                                .replaceAll('\\', '/')
-                                .split('/')
-                            current.splice(-1)
-                            const currentPath = current.join(
-                                process.platform !== 'win32' ? '/' : '\\',
-                            )
-                            const files = readdirSync(currentPath)
-                                .filter((e) => e.endsWith(fileTag))
-                                .map((e) => './' + e.slice(0, -3))
-                            if (!files.length) {
-                                return ts.visitEachChild(node, visitor, ctx)
-                            }
-                            const printer = ts.createPrinter({
-                                newLine: ts.NewLineKind.LineFeed,
-                            })
-                            const imports = files
-                                .map((e) =>
-                                    ctx.factory.createImportDeclaration(
-                                        undefined,
-                                        undefined,
-                                    ts.factory.createStringLiteral(e) as any,
-                                    ),
-                                )
-                                .map((e) => {
-                                    return printer.printNode(
-                                        ts.EmitHint.Unspecified,
-                                        e,
-                                        sf,
-                                    )
-                                })
-                                .map((e) => (e += '\n'))
-                            importsToAdd.push(...imports)
+                        const current = (sf as any).resolvedPath
+                            .replaceAll('\\', '/')
+                            .split('/')
+                        current.splice(-1)
+                        const currentPath = current.join(
+                            process.platform !== 'win32' ? '/' : '\\',
+                        )
+                        const files = readdirSync(currentPath)
+                            .filter((e) => e.endsWith(fileTag))
+                            .map((e) => './' + e.slice(0, -3))
+                        if (!files.length) {
+                            return ts.visitEachChild(node, visitor, ctx)
                         }
-                        return ts.visitEachChild(node, visitor, ctx)
+                        const printer = ts.createPrinter({
+                            newLine: ts.NewLineKind.LineFeed,
+                        })
+                        const imports = files
+                            .map((e) =>
+                                ctx.factory.createImportDeclaration(
+                                    undefined,
+                                    undefined,
+                                    ts.factory.createStringLiteral(e) as any,
+                                ),
+                            )
+                            .map((e) => {
+                                return printer.printNode(
+                                    ts.EmitHint.Unspecified,
+                                    e,
+                                    sf,
+                                )
+                            })
+                            .map((e) => (e += '\n'))
+                        importsToAdd.push(...imports)
                     }
-                    return visitor
+                    return ts.visitEachChild(node, visitor, ctx)
                 }
-                const node = ts.visitNode(sf, testVisitor(ctx, sf))
-                if (importsToAdd.length) {
-                    const normalVisitor = (node: ts.Node) =>
-                        ts.visitEachChild(node, normalVisitor, ctx)
-                    const newSource = ts.createSourceFile(
-                        sf.fileName,
-                        importsToAdd.join('') + sf.getFullText(),
-                        {
-                            ...ctx.getCompilerOptions(),
-                            languageVersion:
+                return visitor
+            }
+            const node = ts.visitNode(sf, testVisitor(ctx, sf))
+            if (importsToAdd.length) {
+                const normalVisitor = (node: ts.Node) =>
+                    ts.visitEachChild(node, normalVisitor, ctx)
+                const newSource = ts.createSourceFile(
+                    sf.fileName,
+                    importsToAdd.join('') + sf.getFullText(),
+                    {
+                        ...ctx.getCompilerOptions(),
+                        languageVersion:
                             ctx.getCompilerOptions().target ||
                             ts.ScriptTarget.ESNext,
-                        },
-                        true,
-                    )
-                    return ts.visitNode(newSource, (node) =>
-                        ts.visitEachChild(node, normalVisitor, ctx),
-                    )
-                }
-                return node
-            }) as unknown as any
-        }
+                    },
+                    true,
+                )
+                return ts.visitNode(newSource, (node) =>
+                    ts.visitEachChild(node, normalVisitor, ctx),
+                )
+            }
+            return node
+        }) as unknown as any
+    }
 
 export function transform(opts: Opts): ts.TransformerFactory<ts.SourceFile> {
     return (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
@@ -596,7 +596,7 @@ function compile(): void {
                 )
             }
         })
-        return emitResult.emitSkipped
+        return emitResult.emitSkipped || allDiagnostics.length
     }
     if (process.argv.some((e) => e === '-w' || e === '--watch')) {
         let currentPostJob: ChildProcess | null = null
