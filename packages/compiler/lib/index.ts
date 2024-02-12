@@ -16,6 +16,20 @@ export interface Opts {
     typeCheker: ts.TypeChecker
 }
 
+const CODE_TO_INJECT = `import { fileURLToPath as __fileURLToPathInternal, pathToFileURL as __pathToFileURLInternal } from "node:url";
+import { dirname as __dirnameInternal } from "node:path";
+import { createRequire as __createRequireInternal } from "node:module";
+const __filename = import.meta.filename || __fileURLToPathInternal(import.meta.url);
+const __dirname = import.meta.dirname || __dirnameInternal(__filename);
+if (!import.meta.filename) import.meta.filename = __filename;
+if (!import.meta.dirname) import.meta.filename = __dirname;
+const require = __createRequireInternal(import.meta.url);
+import.meta.resolve = function (path, base) {
+    if (base)
+    return __pathToFileURLInternal(__createRequireInternal(base).resolve(path)).href;
+    return __pathToFileURLInternal(require.resolve(path)).href;
+}\n`
+
 const transformToReplaceImportJson =
     (_opts: Opts) =>
         (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> =>
@@ -229,8 +243,8 @@ function validReturnTypeOfMethod(
         ts.SignatureKind.Call,
     )[0]
     return (
-        typeChecker.typeToString(func2Signature.getReturnType()) === 'boolean'
-        && func2Signature.getParameters().length === 1
+        typeChecker.typeToString(func2Signature.getReturnType()) ===
+            'boolean' && func2Signature.getParameters().length === 1
     )
 }
 
@@ -241,7 +255,7 @@ const operatorsDictionary: Record<string, string> = {
     '>=': 'lessThanEqual',
 }
 
-const transformTest =
+const transformOperatorsAndExtensions =
     ({ typeCheker }: Opts) =>
         (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
             return ((sf: ts.SourceFile) => {
@@ -517,7 +531,7 @@ function compile(): void {
             host,
         )
         const visitorsBefore = [
-            transformTest({
+            transformOperatorsAndExtensions({
                 typeCheker: program.getTypeChecker(),
             }),
         ]
@@ -537,20 +551,7 @@ function compile(): void {
             undefined,
             (fileName, text) => {
                 if (fileName.endsWith('.js') && !isBrowser) {
-                    text =
-                        `import { fileURLToPath as __fileURLToPathInternal, pathToFileURL as __pathToFileURLInternal } from "node:url";
-import { dirname as __dirnameInternal } from "node:path";
-import { createRequire as __createRequireInternal } from "node:module";
-const __filename = import.meta.filename || __fileURLToPathInternal(import.meta.url);
-const __dirname = import.meta.dirname || __dirnameInternal(__filename);
-if (!import.meta.filename) import.meta.filename = __filename;
-if (!import.meta.dirname) import.meta.filename = __dirname;
-const require = __createRequireInternal(import.meta.url);
-import.meta.resolve = function (path, base) {
-    if (base)
-    return __pathToFileURLInternal(__createRequireInternal(base).resolve(path)).href;
-    return __pathToFileURLInternal(require.resolve(path)).href;
-}\n` + text
+                    text = CODE_TO_INJECT + text
                 }
                 const elements = fileName.replaceAll('\\', '/').split('/')
                 elements.splice(-1)

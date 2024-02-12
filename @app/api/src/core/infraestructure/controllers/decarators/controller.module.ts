@@ -4,7 +4,7 @@ import {
     Module,
     Controller as NestController,
 } from '@nestjs/common'
-import glob from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
@@ -12,7 +12,7 @@ import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { ApiTags } from '@nestjs/swagger'
 
 const initializeControllers = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../controllers/**/*.controller.js').replace(
             /\\/g,
             '/',
@@ -28,7 +28,7 @@ const initializeVersionedControllers = (
     currentPath: string,
     version: string,
 ) => {
-    const data = glob.sync(
+    const data = globSync(
         join(
             currentPath,
             `../../controllers/${version}/**/*.controller.js`,
@@ -41,7 +41,7 @@ const initializeVersionedControllers = (
 }
 
 const initializeServices = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
@@ -51,7 +51,7 @@ const initializeServices = (currentPath: string) => {
 }
 
 export const loadDependencies = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
     return data.asyncMap(async (e) => {
@@ -81,7 +81,7 @@ export async function ControllerModule(
         .toSpliced(-1)
         .join('/')
     const controllers = await initializeControllers(filePath)
-    dependencies.concat(...(await loadDependencies(filePath)))
+    dependencies.push(...(await loadDependencies(filePath)))
     const services = await initializeServices(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isControllerModule = true
@@ -115,7 +115,7 @@ export async function ControllerVersionedModule(
         .toSpliced(-1)
         .join('/')
     const controllers = await initializeVersionedControllers(filePath, version)
-    dependencies.concat(...(await loadDependencies(filePath)))
+    dependencies.push(...(await loadDependencies(filePath)))
     const services = await initializeServices(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isControllerModule = true

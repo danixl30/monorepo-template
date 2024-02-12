@@ -30,6 +30,11 @@ export class Result<T> {
         return handler.error(this.error)
     }
 
+    convertToOther<T>() {
+        if (!this.isError()) throw this.error
+        return Result.error<T>(this.error!)
+    }
+
     static success<T>(value: T) {
         return new Result(value, undefined)
     }

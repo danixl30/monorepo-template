@@ -4,6 +4,7 @@ import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
+import { loadDependencies } from '../../controllers/decarators/controller.module'
 
 const initializeEventListeners = (currentPath: string) => {
     const data = globSync(
@@ -19,12 +20,12 @@ const initializeEventListeners = (currentPath: string) => {
 }
 
 export async function EventListenersModule(
-    dependencies?: (
+    dependencies: (
         | TypeClass<object>
         | DynamicModule
         | Promise<DynamicModule>
         | ForwardReference
-    )[],
+    )[] = [],
 ) {
     if (
         !dependencies?.every(
@@ -38,6 +39,7 @@ export async function EventListenersModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
+    dependencies.push(...(await loadDependencies(filePath)))
     const listeners = await initializeEventListeners(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isEventListenerModule = true

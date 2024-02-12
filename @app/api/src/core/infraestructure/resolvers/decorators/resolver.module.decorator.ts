@@ -39,12 +39,12 @@ export const loadDependencies = (currentPath: string) => {
 }
 
 export async function ResolversModule(
-    dependencies?: (
+    dependencies: (
         | TypeClass<object>
         | DynamicModule
         | Promise<DynamicModule>
         | ForwardReference
-    )[],
+    )[] = [],
 ) {
     if (
         !dependencies?.every(
@@ -58,7 +58,7 @@ export async function ResolversModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
-    dependencies.concat(...(await loadDependencies(filePath)))
+    dependencies.push(...(await loadDependencies(filePath)))
     const services = await initializeServices(filePath)
     const resolvers = await initializeResolvers(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
