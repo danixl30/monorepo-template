@@ -2,6 +2,7 @@
   "name": "monorepo",
   "version": "1.0.0",
   "description": "Monorepo template with pnpm, typescript, nest and react",
+  "type": "module",
   "scripts": {
     "start:dev": "pnpm --recursive --parallel --stream run start:dev",
     "build": "pnpm --recursive --parallel --stream run build",
@@ -22,10 +23,12 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
+    "@jest/globals": "^29.7.0",
     "@s-ui/mono": "^2.34.0",
     "@types/node": "^20.8.8",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
+    "concurrently": "^8.2.2",
     "dependency-cruiser": "^12.6.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
@@ -34,7 +37,7 @@
     "husky": "^8.0.3",
     "prettier": "^2.3.2",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^5.2.0",
+    "typescript": "^5.3.3",
     "vitest": "^0.34.6"
   }
 }

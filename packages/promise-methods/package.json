@@ -1,5 +1,5 @@
 {
-  "name": "@mono/string-methods",
+  "name": "@mono/promise-methods",
   "private": true,
   "types": "./commonjs/index.d.ts",
     "type": "module",

@@ -1,4 +1,4 @@
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
@@ -9,8 +9,8 @@ export const initializeMethods = () => {
         .split('/')
         .toSpliced(-1)
         .join('/')
-    const data = glob.sync(join(filePath, `./*.method.js`).replace(/\\/g, '/'))
+    const data = globSync(join(filePath, `./*.method.js`).replace(/\\/g, '/'))
     return data.map((e) => {
-        require(e)
+        import(e)
     })
 }

@@ -4,7 +4,7 @@ import {
     Module,
     Controller as NestController,
 } from '@nestjs/common'
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
@@ -12,14 +12,14 @@ import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { ApiTags } from '@nestjs/swagger'
 
 const initializeControllers = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../controllers/**/*.controller.js').replace(
             /\\/g,
             '/',
         ),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
@@ -28,39 +28,39 @@ const initializeVersionedControllers = (
     currentPath: string,
     version: string,
 ) => {
-    const data = glob.sync(
+    const data = globSync(
         join(
             currentPath,
             `../../controllers/${version}/**/*.controller.js`,
         ).replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
 const initializeServices = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
 export const loadDependencies = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
-export function ControllerModule(
+export async function ControllerModule(
     dependencies: (
         | TypeClass<object>
         | DynamicModule
@@ -80,9 +80,9 @@ export function ControllerModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
-    const controllers = initializeControllers(filePath)
-    dependencies.concat(...loadDependencies(filePath))
-    const services = initializeServices(filePath)
+    const controllers = await initializeControllers(filePath)
+    dependencies.push(...(await loadDependencies(filePath)))
+    const services = await initializeServices(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isControllerModule = true
         return Module({
@@ -93,7 +93,7 @@ export function ControllerModule(
     }
 }
 
-export function ControllerVersionedModule(
+export async function ControllerVersionedModule(
     version: string,
     dependencies: (
         | TypeClass<object>
@@ -114,9 +114,9 @@ export function ControllerVersionedModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
-    const controllers = initializeVersionedControllers(filePath, version)
-    dependencies.concat(...loadDependencies(filePath))
-    const services = initializeServices(filePath)
+    const controllers = await initializeVersionedControllers(filePath, version)
+    dependencies.push(...(await loadDependencies(filePath)))
+    const services = await initializeServices(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isControllerModule = true
         return Module({

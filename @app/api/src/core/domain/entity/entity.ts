@@ -7,7 +7,7 @@ export abstract class Entity<T extends ValueObject<T>> {
         return this._id
     }
 
-    equals(other: T): boolean {
-        return other.equals(this.id)
+    equals(other?: T): boolean {
+        return other == this.id
     }
 }

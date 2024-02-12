@@ -1,19 +1,22 @@
 {
   "name": "@mono/object-utils",
   "private": true,
-  "types": "./commonjs/index.d.ts",
+    "type": "module",
+  "types": "./esm/index.d.ts",
   "exports": {
       ".": {
-          "require": "./commonjs/index.js",
+          "import": "./esm/index.js",
           "default": "./esm/index.js"
       }
   },
   "module": "./esm/index.js",
   "main": "./commonjs/index.js",
   "scripts": {
-      "build": "tsc --project tsconfig_common.json && tsc --project tsconfig_es.json",
-        "postinstall": "tsc --project tsconfig_common.json && tsc --project tsconfig_es.json",
-      "start:dev": "tsc -w --project tsconfig_common.json && tsc -w --project tsconfig_es.json"
+      "build": "tsc --project tsconfig_common.json && tscc",
+      "postinstall": "tsc --project tsconfig_common.json && tscc"
   },
+    "devDependencies": {
+        "@mono/compiler": "*"
+    },
   "version": "0.0.1"
 }

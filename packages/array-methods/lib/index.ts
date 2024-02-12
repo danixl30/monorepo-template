@@ -60,6 +60,8 @@ type CallBackFindMap<T, R> = (
     collection: T[],
 ) => R | undefined
 
+type NumberOrNever<T> = T extends number ? number : never
+
 declare global {
     interface Array<T> {
         asyncForEach<U>(
@@ -94,9 +96,109 @@ declare global {
         with(index: number, element: T): T[]
         toReversed(): T[]
         toSorted(callback: (a: T, b: T) => number): T[]
-        toSpliced(start: number, elementCount: number, ...items: T[]): T[]
+        toSpliced(start: number, elementCount?: number, ...items: T[]): T[]
+        get lastIndex(): number
+        get last(): T
+        binarySearch(compare: (a: T) => number): [T, number] | undefined
+        asyncBinarySearch(
+            compare: (a: T) => Promise<number>,
+        ): Promise<[T, number] | undefined>
+        groupBy<T>(callback: (ele: T, index: number) => string | number): {
+            [key: string | number]: T[]
+        }
+    }
+
+    interface Array<T extends number | string> {
+        average(): NumberOrNever<T>
+        max(): NumberOrNever<T>
+        min(): NumberOrNever<T>
+        sum(): NumberOrNever<T>
+        equals(other: T[]): boolean
     }
 }
+
+if (!Array.prototype.groupBy)
+    Array.prototype.groupBy = function (
+        this: any[],
+        callback: (e: any, i: number) => string | number,
+    ) {
+        return this.reduce((acc, e, index) => {
+            const key = callback(e, index)
+            if (acc[key]) acc.key.push(e)
+            else acc[key] = [e]
+            return acc
+        }, {})
+    }
+
+if (!Array.prototype.equals)
+    Array.prototype.equals = function (
+        this: number[] | string[],
+        other: number[] | string[],
+    ) {
+        return this.every((value, i) => value === other[i])
+    }
+
+if (!Array.prototype.average)
+    Array.prototype.average = function (this: number[]) {
+        return this.reduce((acc, e) => acc + e, 0) / this.length
+    }
+
+if (!Array.prototype.sum)
+    Array.prototype.sum = function (this: number[]) {
+        return this.reduce((acc, e) => acc + e, 0)
+    }
+
+if (!Array.prototype.max)
+    Array.prototype.max = function (this: number[]) {
+        return Math.max(...this)
+    }
+
+if (!Array.prototype.min)
+    Array.prototype.min = function (this: number[]) {
+        return Math.min(...this)
+    }
+
+if (!Array.prototype.lastIndex)
+    Object.defineProperty(Array.prototype, 'lastIndex', {
+        get(this: any[]) {
+            return this.length - 1
+        },
+    })
+
+if (!Array.prototype.last)
+    Object.defineProperty(Array.prototype, 'last', {
+        get(this: any[]) {
+            return this.at(-1)
+        },
+    })
+
+if (!Array.prototype.binarySearch)
+    Array.prototype.binarySearch = function (this: any[], compare) {
+        let left = 0,
+            right = this.lastIndex
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2)
+            const compareResult = compare(this[mid])
+            if (compareResult === 0) return [this[mid], mid]
+            if (compareResult < 0) right = mid - 1
+            left = mid + 1
+        }
+        return undefined
+    }
+
+if (!Array.prototype.asyncBinarySearch)
+    Array.prototype.asyncBinarySearch = async function (this: any[], compare) {
+        let left = 0,
+            right = this.lastIndex
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2)
+            const compareResult = await compare(this[mid])
+            if (compareResult === 0) return [this[mid], mid]
+            if (compareResult < 0) right = mid - 1
+            left = mid + 1
+        }
+        return undefined
+    }
 
 Array.prototype.asyncForEach = async function (callback) {
     await Promise.all(this.map(callback))

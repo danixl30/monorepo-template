@@ -1,4 +1,4 @@
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
@@ -10,11 +10,11 @@ export const loadDependencies = () => {
         .split('/')
         .toSpliced(-1)
         .join('/')
-    const data = glob.sync(
+    const data = globSync(
         join(filePath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }

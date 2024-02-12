@@ -1,4 +1,4 @@
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
@@ -6,45 +6,45 @@ import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
 
 export const initializeResolvers = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../resolvers/**/*.resolver.js').replace(
             /\\/g,
             '/',
         ),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
 const initializeServices = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
 export const loadDependencies = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
-export function ResolversModule(
-    dependencies?: (
+export async function ResolversModule(
+    dependencies: (
         | TypeClass<object>
         | DynamicModule
         | Promise<DynamicModule>
         | ForwardReference
-    )[],
+    )[] = [],
 ) {
     if (
         !dependencies?.every(
@@ -58,12 +58,13 @@ export function ResolversModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
-    dependencies.concat(...loadDependencies(filePath))
-    const services = initializeServices(filePath)
+    dependencies.push(...(await loadDependencies(filePath)))
+    const services = await initializeServices(filePath)
+    const resolvers = await initializeResolvers(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isResolverModule = true
         return Module({
-            providers: [...initializeResolvers(filePath), ...services],
+            providers: [...resolvers, ...services],
             imports: dependencies,
         })(target)
     }

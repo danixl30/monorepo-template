@@ -1,4 +1,24 @@
 {
-  "extends": "./tsconfig.json"
+  "extends": "./tsconfig.json",
+  "include": ["tests", "src"],
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "sourceMap": true,
+    "outDir": "./dist_test",
+    "baseUrl": "./",
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ],
+      "tests/*": [
+        "./tests/*"
+      ]
+    }
+  },
+  "tscc": {
+    "deleteOutDir": true
+  }
 }
 

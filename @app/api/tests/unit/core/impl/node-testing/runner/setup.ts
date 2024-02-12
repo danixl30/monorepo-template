@@ -2,17 +2,17 @@ import '@mono/array-methods'
 import '@mono/string-methods'
 import '@mono/number-methods'
 import '@mono/object-utils'
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 
 const importTestSuits = () => {
-    const data = glob.sync(
-        join(__dirname, '../../../../suits/**/suit.tests.ts').replace(
+    const data = globSync(
+        join(__dirname, '../../../../suits/**/suit.tests.js').replace(
             /\\/g,
             '/',
         ),
     )
-    return data.map(require)
+    return data.asyncMap((e) => import('file:///' + e))
 }
 
-importTestSuits()
+await importTestSuits()

@@ -1,30 +1,31 @@
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
+import { loadDependencies } from '../../controllers/decarators/controller.module'
 
 const initializeEventListeners = (currentPath: string) => {
-    const data = glob.sync(
+    const data = globSync(
         join(
             currentPath,
             '../../event-listeners/**/*.event.listener.js',
         ).replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = require(e)
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
         return objectValues(module)[0]
     })
 }
 
-export function EventListenersModule(
-    dependencies?: (
+export async function EventListenersModule(
+    dependencies: (
         | TypeClass<object>
         | DynamicModule
         | Promise<DynamicModule>
         | ForwardReference
-    )[],
+    )[] = [],
 ) {
     if (
         !dependencies?.every(
@@ -38,10 +39,12 @@ export function EventListenersModule(
         .split('/')
         .toSpliced(-1)
         .join('/')
+    dependencies.push(...(await loadDependencies(filePath)))
+    const listeners = await initializeEventListeners(filePath)
     return function <T extends { new (...args: any[]): object }>(target: T) {
         ;(target as any).__isEventListenerModule = true
         return Module({
-            providers: initializeEventListeners(filePath),
+            providers: listeners,
             imports: dependencies,
         })(target)
     }

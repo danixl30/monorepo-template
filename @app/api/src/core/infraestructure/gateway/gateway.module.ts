@@ -1,22 +1,19 @@
-import { glob } from 'glob'
+import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { BarrelModule } from '../decorators/barrel.module'
 
 const initializeModules = () => {
-    const data = glob.sync(
+    const data = globSync(
         join(
             __dirname,
             '../../../**/infraestructure/modules/gateways/module.js',
         ).replace(/\\/g, '/'),
     )
-    return data.map((e) => {
-        const module = objectValues(require(e))[0]
-        if (!(module as any).__isGatewayModule)
-            throw new Error('Invalid gateway module')
-        return module
+    return data.asyncMap(async (e) => {
+        const module = await import('file:///' + e)
+        return objectValues(module)[0]
     })
 }
-
-@BarrelModule(initializeModules())
+@BarrelModule(await initializeModules())
 export class GatewayModule {}

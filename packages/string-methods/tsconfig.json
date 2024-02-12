@@ -1,14 +1,15 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "CommonJs",
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
+        "module": "ESNext",
         "target": "ESNext",
+        "lib": ["dom", "ESNext"],
         "sourceMap": true,
-        "outDir": "./commonjs",
+        "outDir": "./esm",
         "downlevelIteration": true,
         "baseUrl": "./lib"
     },
     "include": ["lib"],
-    "exclude": ["./commonjs/**/*"]
+    "exclude": ["./esm/**/*"]
 }
