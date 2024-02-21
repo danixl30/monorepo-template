@@ -1,1 +1,1 @@
-export * from './node-testing'
+export * from './jest'
