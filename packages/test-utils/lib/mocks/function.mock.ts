@@ -41,8 +41,8 @@ export const createFunctionMockAsync = <
     T extends Function,
     R = Awaited<ReturnType<T>>,
 >(
-        func: T,
-    ): MockFunctionAsync<T, R> => {
+    func: T,
+): MockFunctionAsync<T, R> => {
     const mock: MockFunctionAsync<T, R> = async function (
         ...args: ArgumentTypes<T>
     ): Promise<R> {

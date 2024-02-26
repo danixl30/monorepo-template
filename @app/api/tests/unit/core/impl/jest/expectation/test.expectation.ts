@@ -1,5 +1,5 @@
 import { ExpectationContract } from '@mono/test-utils'
-import {expect} from '@jest/globals'
+import { expect } from '@jest/globals'
 
 export const jestExpectation: ExpectationContract = <T>(value: T) => ({
     equals: (valueToCompare: T) => expect(value).toBe(valueToCompare),

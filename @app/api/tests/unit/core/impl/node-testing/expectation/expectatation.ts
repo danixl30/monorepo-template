@@ -127,18 +127,18 @@ export const nodeTestingExpectation: ExpectationContract = <T>(value: T) => ({
     toMatch: (regExp: string | RegExp) => {
         if (typeof regExp === 'string') {
             if (typeof value === 'string' && !value.includes(regExp))
-                throw new Error('Pattern not match')
+                throw new Error(`Pattern ${regExp} not match with ${value}`)
             return
         }
-        if (!regExp.test(value as string)) throw new Error('Pattern not match')
+        assert.match(value as any, regExp)
     },
     toNotMatch: (regExp: string | RegExp) => {
         if (typeof regExp === 'string') {
             if (typeof value === 'string' && value.includes(regExp))
-                throw new Error('Pattern match')
+                throw new Error(`Pattern ${regExp} match with ${value}`)
             return
         }
-        if (regExp.test(value as string)) throw new Error('Pattern match')
+        assert.doesNotMatch(value as any, regExp)
     },
     toMathObject: (valueToCompare: object) =>
         assert.deepEqual(value, valueToCompare),
@@ -153,8 +153,16 @@ export const nodeTestingExpectation: ExpectationContract = <T>(value: T) => ({
     },
     toBeErrorAsync: (error: Error | string) => {
         if (typeof value !== 'function') throw new Error('Invalid function')
-        value().then(() => {
-            throw new Error('Function not be an error')
-        })
+        value()
+            .then(() => {
+                throw new Error('Function not be an error')
+            })
+            .catch((e: any) => {
+                if (typeof error === 'string' && e.message !== error)
+                    throw new Error(
+                        `Error ${error} not match with ${e.message}`,
+                    )
+                assert.deepEqual(e, error)
+            })
     },
 })

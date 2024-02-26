@@ -547,9 +547,22 @@ function compile(): void {
                     typeCheker: program.getTypeChecker(),
                 }),
             )
+        const codeInject:
+            | {
+                  linesPostCompile?: {
+                      files: string[]
+                      lines: string[]
+                  }[]
+              }
+            | undefined = tsConfigParsed.tscc
         const emitResult = program.emit(
             undefined,
             (fileName, text) => {
+                codeInject?.linesPostCompile?.forEach((e) => {
+                    if (e.files.some((e) => new RegExp(e).test(fileName.replaceAll('\\', '/')))) {
+                        text = e.lines.join('\n') + '\n' + text
+                    }
+                })
                 if (fileName.endsWith('.js') && !isBrowser) {
                     text = CODE_TO_INJECT + text
                 }

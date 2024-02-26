@@ -17,6 +17,10 @@
     "test:unit": "tscc --project ./tsconfig.test.json && node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./dist_test/tests/unit/core/impl/jest/runner/jest-unit.js",
     "dependencies-graph": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
+  "imports": {
+        "#corejest": "./dist_test/tests/unit/core/impl/jest/index.js",
+        "#corenode": "./dist_test/tests/unit/core/impl/node-testing/index.js"
+    },
   "dependencies": {
     "@mono/array-methods": "workspace:*",
     "@mono/promise-methods": "workspace:*",
