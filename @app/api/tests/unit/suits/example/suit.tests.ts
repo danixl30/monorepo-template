@@ -1,5 +1,6 @@
-import { loader, suitDeclare } from '../../core/impl'
-
-suitDeclare('example', {
-    tests: await loader(),
+const tests = await loader()
+suiteDeclare('example', {
+    tests,
 })
+
+export {}

@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["tests", "src"],
+  "include": ["tests", "src", "./tests/unit/global.d.ts"],
   "compilerOptions": {
     "moduleResolution": "Node",
     "module": "ESNext",
@@ -18,7 +18,10 @@
     }
   },
   "tscc": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "linesPostCompile": [{
+        "files": [".*\\.test.js$", "suit.tests.js$"],
+        "lines": ["import { lookFor, suiteDeclare, loader } from \"#corejest\";"]
+    }]
   }
 }
-
