@@ -103,9 +103,11 @@ declare global {
         asyncBinarySearch(
             compare: (a: T) => Promise<number>,
         ): Promise<[T, number] | undefined>
-        groupBy<T>(callback: (ele: T, index: number) => string | number): {
+        groupBy(callback: (ele: T, index: number) => string | number): {
             [key: string | number]: T[]
         }
+        clean(): T[]
+        indexes(): number[]
     }
 
     interface Array<T extends number | string> {
@@ -114,6 +116,10 @@ declare global {
         min(): NumberOrNever<T>
         sum(): NumberOrNever<T>
         equals(other: T[]): boolean
+    }
+
+    interface ArrayConstructor {
+        range(start: number, end: number, stepBy?: number): number[]
     }
 }
 
@@ -369,6 +375,21 @@ Array.prototype.asyncFilterWithComplement = async function (callback) {
         }
     }
     return [arrSet, complement]
+}
+
+Array.prototype.clean = function (this: any[]) {
+    this.length = 0
+    return this
+}
+
+Array.prototype.indexes = function (this: any[]) {
+    return Array.from(this.keys())
+}
+
+Array.range = function (start, end, stepBy = 1) {
+    const arr: number[] = []
+    for (; start <= end; start += stepBy) arr.push(start)
+    return arr
 }
 
 export default null

@@ -2,10 +2,11 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "module": "CommonJs",
-        "lib": ["dom", "es2017"],
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./commonjs",
+        "downlevelIteration": true,
         "baseUrl": "./lib"
     },
     "include": ["lib"],

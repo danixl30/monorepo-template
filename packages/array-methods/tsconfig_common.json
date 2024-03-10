@@ -6,6 +6,7 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./commonjs",
+        "downlevelIteration": true,
         "baseUrl": "./lib"
     },
     "include": ["lib"],
