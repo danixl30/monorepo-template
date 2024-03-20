@@ -27,6 +27,7 @@
   "tscc": {
       "excludesWatch": ["public", "tests", "dist_test"],
       "postWatch": "node dist/main",
+      "transformsMethodsToArrow": true,
     "deleteOutDir": true
   }
 }

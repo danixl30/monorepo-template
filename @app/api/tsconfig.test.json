@@ -19,6 +19,7 @@
   },
   "tscc": {
     "deleteOutDir": true,
+      "transformsMethodsToArrow": true,
     "linesPostCompile": [{
         "files": [".*\\.test.js$", "suit.tests.js$"],
         "lines": ["import { lookFor, suiteDeclare, loader } from \"#corejest\";"]
