@@ -22,7 +22,7 @@ import { createRequire as __createRequireInternal } from "node:module";
 const __filename = import.meta.filename || __fileURLToPathInternal(import.meta.url);
 const __dirname = import.meta.dirname || __dirnameInternal(__filename);
 if (!import.meta.filename) import.meta.filename = __filename;
-if (!import.meta.dirname) import.meta.filename = __dirname;
+if (!import.meta.dirname) import.meta.dirname = __dirname;
 const require = __createRequireInternal(import.meta.url);
 import.meta.resolve = function (path, base) {
     if (base)
