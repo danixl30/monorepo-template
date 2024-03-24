@@ -4,7 +4,7 @@ import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
-import { loadDependencies } from '../../controllers/decarators/controller.module'
+import { loadDependencies } from '../../controllers/decorators/controller.module'
 
 const initializeEventListeners = (currentPath: string) => {
     const data = globSync(
