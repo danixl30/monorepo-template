@@ -13,8 +13,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,libs,test}/**/*.ts\" --fix",
     "test:e2e": "tscc --project ./tsconfig.test.json && node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./dist_test/tests/e2e/core/impl/jest/runner/jest-e2e.js",
-    "test:unit2": "tscc --project ./tsconfig.test.json && node --test ./dist_test/tests/unit/core/impl/node-testing/runner/setup.js",
-    "test:unit": "tscc --project ./tsconfig.test.json && node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./dist_test/tests/unit/core/impl/jest/runner/jest-unit.js",
+    "test:unit": "tscc --project ./tsconfig.test.json && node --test ./dist_test/tests/unit/core/impl/node-testing/runner/setup.js",
+    "test:unit2": "tscc --project ./tsconfig.test.json && node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./dist_test/tests/unit/core/impl/jest/runner/jest-unit.js",
     "dependencies-graph": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "imports": {

@@ -41,7 +41,21 @@ export const jestExpectation: ExpectationContract = <T>(value: T) => ({
     toNotMatch: (regExp: string | RegExp) => expect(value).not.toMatch(regExp),
     toMathObject: (valueToCompare: object) =>
         expect(value).toMatchObject(valueToCompare as any),
-    toBeError: (error: Error | string) => expect(value).toThrow(error),
-    toBeErrorAsync: (error: Error | string) =>
-        expect(value).rejects.toThrow(error),
+    toBeError: (error?: Error | string) => expect(value).toThrow(error),
+    async asyncReject(manager) {
+        try {
+            await value
+            throw new Error('Promise not reject')
+        } catch (error) {
+            manager?.(error)
+        }
+    },
+    async asyncResolve(manager) {
+        try {
+            const res = await value
+            manager?.(res as unknown as any)
+        } catch (error) {
+            throw new Error('Promise reject')
+        }
+    },
 })

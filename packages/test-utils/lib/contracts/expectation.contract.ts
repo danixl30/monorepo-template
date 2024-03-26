@@ -27,5 +27,6 @@ export type ExpectationContract = <T>(value: T) => {
     toNotMatch: (regExp: string | RegExp) => void
     toMathObject: (valueToCompare: object) => void
     toBeError: (error?: Error | string) => void
-    toBeErrorAsync: (error?: Error | string) => void
+    asyncResolve(manager?: (value: Awaited<T>) => void): Promise<void>
+    asyncReject<U = unknown>(manager?: (err: U) => void): Promise<void>
 }

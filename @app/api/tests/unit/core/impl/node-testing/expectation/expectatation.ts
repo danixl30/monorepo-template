@@ -142,7 +142,7 @@ export const nodeTestingExpectation: ExpectationContract = <T>(value: T) => ({
     },
     toMathObject: (valueToCompare: object) =>
         assert.deepEqual(value, valueToCompare),
-    toBeError: (error: Error | string) => {
+    toBeError: (error?: Error | string) => {
         try {
             if (typeof value !== 'function') throw new Error('Not a function')
             value()
@@ -151,18 +151,20 @@ export const nodeTestingExpectation: ExpectationContract = <T>(value: T) => ({
             assert.deepEqual(e, error)
         }
     },
-    toBeErrorAsync: (error: Error | string) => {
-        if (typeof value !== 'function') throw new Error('Invalid function')
-        value()
-            .then(() => {
-                throw new Error('Function not be an error')
-            })
-            .catch((e: any) => {
-                if (typeof error === 'string' && e.message !== error)
-                    throw new Error(
-                        `Error ${error} not match with ${e.message}`,
-                    )
-                assert.deepEqual(e, error)
-            })
+    async asyncReject(manager) {
+        try {
+            await value
+            assert.fail('Promise not reject')
+        } catch (error) {
+            manager?.(error)
+        }
+    },
+    async asyncResolve(manager) {
+        try {
+            const res = await value
+            manager?.(res as unknown as any)
+        } catch (error) {
+            assert.fail('Promise reject')
+        }
     },
 })

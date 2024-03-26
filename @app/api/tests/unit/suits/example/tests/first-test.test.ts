@@ -6,12 +6,6 @@ export const body = () => {
         a: [1, '', '', '', 1],
         b: 1,
     })
-        // .with(
-        //     {
-        //         a: C.String,
-        //     },
-        //     () => console.log('test matched'),
-        // )
         .with(
             {
                 a: [1, ...C.ArrayFiller(C.String), 1],
@@ -21,4 +15,12 @@ export const body = () => {
         )
         .otherwise(() => console.log('default1'))
     lookFor(true).equals(true)
+    lookFor({
+        a: 'test',
+    }).toMathObject({
+        a: 'test',
+    })
+    lookFor({
+        a: 'test',
+    }).toBeTruthy()
 }
