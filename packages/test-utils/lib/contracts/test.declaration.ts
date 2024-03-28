@@ -5,8 +5,8 @@ export type SuitOptions = {
 
 export type SuitDeclaration = (
     name: string,
-    data: {
-        tests: TestDeclaration[]
+    data?: {
+        tests?: TestDeclaration[]
         options?: SuitOptions
         beforeEach?: (() => void | Promise<void>)[]
         beforeAll?: (() => void | Promise<void>)[]

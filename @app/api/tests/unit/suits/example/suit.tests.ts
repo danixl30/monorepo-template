@@ -1,6 +1,3 @@
-const tests = await loader()
-suiteDeclare('example', {
-    tests,
-})
+suiteDeclare('example')
 
 export {}
