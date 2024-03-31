@@ -1,19 +1,19 @@
-import { DomainEvent } from '../events/event'
 import { Entity } from '../entity/entity'
+import { DomainEventBase } from '../events/event'
 import { ValueObject } from '../value-objects/value.object'
 
 export abstract class AggregateRoot<
     T extends ValueObject<T>,
 > extends Entity<T> {
-    private events: DomainEvent[] = []
+    private events: DomainEventBase[] = []
 
-    pullEvents(): DomainEvent[] {
+    pullEvents(): DomainEventBase[] {
         const temp = this.events
         this.events = []
         return temp
     }
 
-    protected publish(event: DomainEvent) {
+    protected publish(event: DomainEventBase) {
         this.validateState()
         this.events.push(event)
     }
