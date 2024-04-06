@@ -17,6 +17,7 @@ export class Result<T> {
     }
 
     handleError<R>(handler: (e: ApplicationError) => R) {
+        if (!this.isError()) throw new Error('Can not handler without an error')
         return handler(this.error!)
     }
 
@@ -31,7 +32,8 @@ export class Result<T> {
     }
 
     convertToOther<T>() {
-        if (!this.isError()) throw this.error
+        if (!this.isError())
+            throw new Error('Can not convert to other without an error')
         return Result.error<T>(this.error!)
     }
 
