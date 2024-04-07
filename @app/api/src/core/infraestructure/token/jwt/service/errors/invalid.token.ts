@@ -1,7 +1,7 @@
-import { createApplicationError } from 'src/core/application/error/application.error'
+import { makeApplicationErrorFactory } from 'src/core/application/error/application.error'
 
 export const INVALID_TOKEN = 'INVALID_TOKEN'
-export const invalidTokenError = createApplicationError(
-    INVALID_TOKEN,
-    'The token is not valid',
-)
+export const invalidTokenError = makeApplicationErrorFactory({
+    name: INVALID_TOKEN,
+    message: 'The token is not valid',
+})

@@ -1,4 +1,6 @@
 import { ComparationUtils as C, match } from '@mono/pattern-matching'
+import { makeApplicationErrorFactory } from '../../../../../src/core/application/error/application.error'
+import { Result } from '../../../../../src/core/application/result-handler/result.handler'
 
 export const name = 'firstTest'
 export const body = () => {
@@ -23,4 +25,9 @@ export const body = () => {
     lookFor({
         a: 'test',
     }).toBeTruthy()
+    const errorTest = makeApplicationErrorFactory({
+        message: 'test',
+        name: 'error1',
+    })
+    Result.error(errorTest())
 }

@@ -16,7 +16,7 @@ export class Result<T> {
         return Boolean(this.error)
     }
 
-    handleError<R>(handler: (e: ApplicationError) => R) {
+    handleError<R>(handler: (e: ApplicationError<any>) => R) {
         if (!this.isError()) throw new Error('Can not handler without an error')
         return handler(this.error!)
     }

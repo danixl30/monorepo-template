@@ -16,7 +16,7 @@ class JwtServiceManager<T extends object> implements TokenProvider<T> {
             const data = this.jwtService.verify<T>(value)
             return Result.success(data)
         } catch (error) {
-            return Result.error(invalidTokenError)
+            return Result.error(invalidTokenError())
         }
     }
 }

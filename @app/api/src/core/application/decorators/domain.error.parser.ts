@@ -1,6 +1,6 @@
 import { ApplicationService } from '../service/application.service'
 import { Result } from '../result-handler/result.handler'
-import { createApplicationError } from '../error/application.error'
+import { makeApplicationErrorFactory } from '../error/application.error'
 
 export class DomainErrorParserDecorator<T, U>
     implements ApplicationService<T, U>
@@ -10,9 +10,12 @@ export class DomainErrorParserDecorator<T, U>
         try {
             return await this.service.execute(data)
         } catch (error) {
-            if (error.kind === 'Domain')
+            if (error.kind === 'DOMAIN')
                 return Result.error(
-                    createApplicationError(error.name, error.message),
+                    makeApplicationErrorFactory({
+                        name: error.name,
+                        message: error.message,
+                    })(error.info),
                 )
             throw error
         }

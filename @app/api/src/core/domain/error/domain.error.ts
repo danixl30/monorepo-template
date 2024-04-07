@@ -7,14 +7,14 @@ export type DomainError<T = void> = {
     info: T
 }
 
-export const makeErrorFactory = <T = void>(data: {
+export const makeDomainErrorFactory = <T = void>(data: {
     name: string
     message: string
 }) => {
     const target = class extends Error implements DomainError<T> {
         name = data.name
         message = data.message
-        kind: 'DOMAIN' = 'DOMAIN' as const
+        kind = 'DOMAIN' as const
         constructor(public info: T) {
             super()
             const arr = this.stack?.split('\n')
