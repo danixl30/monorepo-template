@@ -7,6 +7,7 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "sourceMap": true,
         "outDir": "./esm",
+        "removeComments": false,
         "baseUrl": "./lib"
     },
     "include": ["lib"],

@@ -1,0 +1,28 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["../tests", "../src", "./tests/unit/global.d.ts"],
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "sourceMap": true,
+    "outDir": "../dist_test",
+    "baseUrl": "../",
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ],
+      "tests/*": [
+        "./tests/*"
+      ]
+    }
+  },
+  "tscc": {
+    "deleteOutDir": true,
+      "transformsMethodsToArrow": true,
+    "linesPostCompile": [{
+        "files": [".*\\.test.js$", "group.tests.js$", "feature.js$", "scenario.js$", "given.js$", "when.js$", "then.js$"],
+        "lines": ["import { lookFor, declareGroup, loader, declareFeature, declareScenario } from \"#coremocha\";"]
+    }]
+  }
+}

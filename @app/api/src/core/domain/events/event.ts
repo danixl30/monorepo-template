@@ -1,33 +1,34 @@
 export interface DomainEventRecord {}
 
-type EventBase = {
-    timestamp?: Date
-}
+type EventBase = object
 
 export type DomainEventBase = {
-    name: string
-    timestamp: Date
+	name: string
+	timestamp: Date
 }
 
 export type DomainEventInstance<T extends EventBase> = {
-    readonly [Property in keyof T as Exclude<
-        Property,
-        'timestamp'
-    >]: T[Property]
+	readonly [Property in keyof T as Exclude<
+		Property,
+		'timestamp'
+	>]: T[Property]
 } & {
-    readonly timestamp: Date
+	readonly timestamp: Date
 }
 
 export function domainEventFactory<T extends EventBase>(name: string) {
-    return (
-        data: T,
-    ): DomainEventInstance<
-        T & {
-            name: string
-        }
-    > => ({
-        name,
-        timestamp: new Date(),
-        ...data,
-    })
+	return (
+		data: T & {
+			timestamp?: Date
+		},
+	): DomainEventInstance<
+		T & {
+			name: string
+			timestamp: Date
+		}
+	> => ({
+		name,
+		timestamp: data.timestamp ?? new Date(),
+		...data,
+	})
 }

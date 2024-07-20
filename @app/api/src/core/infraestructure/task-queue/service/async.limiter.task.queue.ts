@@ -4,11 +4,11 @@ import Limiter from 'async-limiter'
 
 @Injectable()
 export class AsyncLimiterTaskQueue implements TaskQueue {
-    private readonly queue = new Limiter({ concurrency: 1 })
-    add(task: () => void | Promise<void>): void {
-        this.queue.push(async (cb: () => void) => {
-            await task()
-            cb()
-        })
-    }
+	private readonly queue = new Limiter({ concurrency: 1 })
+	add(task: () => void | Promise<void>): void {
+		this.queue.push(async (cb: () => void) => {
+			await task()
+			cb()
+		})
+	}
 }

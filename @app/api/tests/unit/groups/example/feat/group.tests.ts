@@ -1,0 +1,3 @@
+await declareGroup('example')
+
+export {}

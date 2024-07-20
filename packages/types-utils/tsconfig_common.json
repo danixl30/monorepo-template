@@ -6,6 +6,7 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./commonjs",
+        "removeComments": false,
         "baseUrl": "./lib"
     },
     "include": ["lib"],

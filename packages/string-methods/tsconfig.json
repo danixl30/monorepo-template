@@ -8,6 +8,7 @@
         "sourceMap": true,
         "outDir": "./esm",
         "downlevelIteration": true,
+        "removeComments": false,
         "baseUrl": "./lib"
     },
     "include": ["lib"],

@@ -1,6 +1,7 @@
 export type DocumentationProps = {
-    title: string
-    description: string
-    version: string
-    path: string
+	title: string
+	description: string
+	version: string
+	path: string
+	bearerAuth: boolean
 }

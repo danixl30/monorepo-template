@@ -1,18 +1,15 @@
 import { ApplicationService } from '../service/application.service'
-import { ExceptionReductor } from '../exception-reductor/exception.reductor'
-import { Result } from '../result-handler/result.handler'
 
-export class ExceptionDecorator<T, U> implements ApplicationService<T, U> {
-    constructor(
-        private service: ApplicationService<T, U>,
-        private reductor: ExceptionReductor,
-    ) {}
-    async execute(data: T): Promise<Result<U>> {
-        try {
-            return this.service.execute(data)
-        } catch (e) {
-            this.reductor.reduce(e)
-            throw e
-        }
-    }
-}
+export const exceptionDecorator =
+	<T, U>(
+		service: ApplicationService<T, U>,
+		reductor: (e: Error) => void,
+	): ApplicationService<T, U> =>
+	async (data) => {
+		try {
+			return service(data)
+		} catch (e) {
+			reductor(e)
+			throw e
+		}
+	}

@@ -1,3 +1,3 @@
 export interface Builder<T> {
-    build(): T
+	build(): T
 }

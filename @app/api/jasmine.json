@@ -1,0 +1,22 @@
+{
+  "spec_dir": "./dist_test/tests/unit",
+
+  "spec_files": [
+    "groups/**/**/group.tests.js",
+    "features/**/feature.js"
+  ],
+
+  "helpers": [
+    "core/impl/jasmine/runner/setup.js"
+  ],
+  
+  "env": {
+    "failSpecWithNoExpectations": false,
+    
+    "stopSpecOnExpectationFailure": false,
+
+    "stopOnSpecFailure": false,
+
+    "random": false
+  }
+}

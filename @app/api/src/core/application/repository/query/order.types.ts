@@ -1,5 +1,5 @@
 export enum OrderTypes {
-    ASC = 'asc',
-    DESC = 'desc',
-    NONE = 'none',
+	ASC = 'asc',
+	DESC = 'desc',
+	NONE = 'none',
 }

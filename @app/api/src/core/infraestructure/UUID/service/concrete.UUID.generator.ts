@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class ConcreteUUIDGenerator implements IDGenerator<string> {
-    generate(): string {
-        return crypto.randomUUID()
-    }
+	generate(): string {
+		return crypto.randomUUID()
+	}
 }

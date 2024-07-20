@@ -21,8 +21,8 @@
     "deleteOutDir": true,
       "transformsMethodsToArrow": true,
     "linesPostCompile": [{
-        "files": [".*\\.test.js$", "suit.tests.js$"],
-        "lines": ["import { lookFor, suiteDeclare, loader } from \"#corenode\";"]
+        "files": [".*\\.test.js$", "group.tests.js$", "feature.js$", "scenario.js$", "given.js$", "when.js$", "then.js$"],
+        "lines": ["import { lookFor, declareGroup, loader, declareFeature, declareScenario } from \"#corenode\";"]
     }]
   }
 }

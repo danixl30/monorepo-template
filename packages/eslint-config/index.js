@@ -20,7 +20,8 @@ module.exports = {
         camelcase: [
             'error',
             {
-                properties: 'always',
+                properties: 'never',
+                ignoreImports: true,
             },
         ],
         'no-return-await': ['error'],
@@ -29,10 +30,8 @@ module.exports = {
         'prefer-const': ['error'],
         'prefer-object-spread': ['error'],
         'prefer-regex-literals': ['error'],
-        'sort-imports': ['warn'],
         semi: ['error', 'never'],
         'consistent-return': 2,
-        indent: [1, 4],
         'no-else-return': 1,
         '@typescript-eslint/no-non-null-assertion': 'off',
         'prettier/prettier': [

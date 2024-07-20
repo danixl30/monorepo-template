@@ -1,3 +1,3 @@
 export type DeleteImageOptions = {
-    url: string
+	url: string
 }

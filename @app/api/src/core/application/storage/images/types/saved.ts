@@ -1,3 +1,3 @@
 export type ImageSaved = {
-    url: string
+	url: string
 }

@@ -5,6 +5,7 @@
         "lib": ["dom", "es2017"],
         "moduleResolution": "node",
         "sourceMap": true,
+        "removeComments": false,
         "outDir": "./commonjs",
         "baseUrl": "./lib"
     },

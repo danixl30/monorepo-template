@@ -5,16 +5,16 @@ import { ServiceModule } from 'src/core/infraestructure/decorators/service.modul
 export const JWT_PROVIDER_TOKEN = 'JWT_PROVIDER_TOKEN'
 
 @ServiceModule(
-    [
-        {
-            provide: JWT_PROVIDER_TOKEN,
-            useClass: JwtProviderService,
-        },
-    ],
-    [
-        JwtModule.register({
-            secret: 'test',
-        }),
-    ],
+	[
+		{
+			provide: JWT_PROVIDER_TOKEN,
+			useClass: JwtProviderService,
+		},
+	],
+	[
+		JwtModule.register({
+			secret: 'test',
+		}),
+	],
 )
 export class JwtProviderModule {}

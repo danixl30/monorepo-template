@@ -1,0 +1,3 @@
+await declareFeature('Example')
+
+export {}

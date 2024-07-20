@@ -1,3 +1,0 @@
-suiteDeclare('example')
-
-export {}

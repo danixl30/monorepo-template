@@ -1,3 +1,3 @@
 export type DeleteFileOptions = {
-    path: string
+	path: string
 }
