@@ -36,6 +36,7 @@
     "@mono/pattern-matching": "workspace:*",
     "@mono/promise-methods": "workspace:*",
     "@mono/string-methods": "workspace:*",
+    "@mono/boolean-methods": "workspace:*",
     "@mono/types-utils": "workspace:*",
     "@nestjs/common": "^9.4.0",
     "@nestjs/core": "^9.4.0",

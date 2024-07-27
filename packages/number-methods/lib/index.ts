@@ -13,7 +13,7 @@ declare global {
 		 *
 		 * Compare if number is equals to other, if you compare two NaN it returns true
 		 */
-		equals(other: number): boolean
+		equals(other?: number): boolean
 		/**
 		 * Get the lenght of int part of a number
 		 */
@@ -33,9 +33,9 @@ Number.prototype.toFixedNumber = function (this: number, digits?: number) {
 	return Number(this.toFixed(digits))
 }
 
-Number.prototype.equals = function (this: number, other: number) {
+Number.prototype.equals = function (this: number, other?: number) {
 	if (Number.isNaN(this) && Number.isNaN(other)) return true
-	return this === other
+	return Number(this) === Number(other)
 }
 
 Number.prototype.lenghtInt = function (this: number) {

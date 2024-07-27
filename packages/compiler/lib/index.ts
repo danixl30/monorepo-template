@@ -336,7 +336,13 @@ function getPropsOfNode(
 function validReturnTypeOfMethod(
 	type: ts.Type | undefined,
 	typeChecker: ts.TypeChecker,
-) {
+): boolean {
+	if (type?.isUnion()) {
+		return type.types.every((e) => validReturnTypeOfMethod(e, typeChecker))
+	}
+	if (type?.isIntersection()) {
+		return type.types.some((e) => validReturnTypeOfMethod(e, typeChecker))
+	}
 	if (!type?.symbol.valueDeclaration) return false
 	const func2Type = typeChecker.getTypeOfSymbolAtLocation(
 		type.symbol,
