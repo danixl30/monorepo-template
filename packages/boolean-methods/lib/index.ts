@@ -1,10 +1,11 @@
 declare global {
 	interface Boolean {
 		/**
-		 * 
+		 *
 		 * Compare two instances of Boolean and returns true if constains the same value
 		 */
-		equals(other?: boolean): boolean
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		equals(other?: boolean | Boolean): boolean
 		/**
 		 * Similar to valueOf
 		 */
@@ -12,17 +13,17 @@ declare global {
 	}
 	interface BooleanConstructor {
 		/**
-		 * 
+		 *
 		 * Create boolean by s string, if you pass 'false' will return false, in other cases will use the original constructor
 		 */
 		fromString(str: string): boolean
 		/**
-		 * 
+		 *
 		 * Get boolean by array, compare the lenght
 		 */
 		fromArray(arr: any[]): boolean
 		/**
-		 * 
+		 *
 		 * Get boolean by object, compare the lenght of the keys
 		 */
 		fromObject(obj: Record<any, any>): boolean

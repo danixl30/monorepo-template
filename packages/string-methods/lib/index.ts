@@ -41,6 +41,8 @@ declare global {
 		trimCharcter(char: string): string
 		trimCharcterStart(char: string): string
 		trimCharcterEnd(char: string): string
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		equals(other?: string | String): boolean
 		at(index: number): string | undefined
 		get lastIndex(): number
 		get last(): string
@@ -212,12 +214,16 @@ if (!String.prototype.reverse)
 		return this.split('').reverse().join('')
 	}
 
+String.prototype.equals = function (other) {
+	return String(this) === String(other)
+}
+
 declare global {
 	interface StringConstructor {
-		isString<T>(value: T): boolean
+		isString(value: any): value is string
 	}
 }
 
-String.isString = <T>(value: T): boolean => typeof value === 'string'
+String.isString = (value): value is string => typeof value === 'string'
 
 export default null

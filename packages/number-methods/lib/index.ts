@@ -13,7 +13,8 @@ declare global {
 		 *
 		 * Compare if number is equals to other, if you compare two NaN it returns true
 		 */
-		equals(other?: number): boolean
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		equals(other?: number | Number): boolean
 		/**
 		 * Get the lenght of int part of a number
 		 */
