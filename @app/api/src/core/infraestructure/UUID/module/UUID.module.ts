@@ -1,5 +1,5 @@
-import { ConcreteUUIDGenerator } from '../service/concrete.UUID.generator'
 import { ServiceModule } from '../../decorators/service.module'
+import { ConcreteUUIDGenerator } from '../service/concrete.UUID.generator'
 
 export const UUID_GEN_NATIVE = 'UUID_GEN_NATIVE'
 

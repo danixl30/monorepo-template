@@ -10,7 +10,7 @@ export type Result<T> = {
 	convertToOther<T>(): Result<T>
 }
 
-export const Success = <T>(value: T): Result<T> => ({
+export const Ok = <T>(value: T): Result<T> => ({
 	unwrap() {
 		return value
 	},
@@ -31,7 +31,7 @@ export const Success = <T>(value: T): Result<T> => ({
 	},
 })
 
-export const Failure = <T>(err: ApplicationError): Result<T> => ({
+export const Fail = <T>(err: ApplicationError): Result<T> => ({
 	unwrap() {
 		throw err
 	},
@@ -39,7 +39,7 @@ export const Failure = <T>(err: ApplicationError): Result<T> => ({
 		return defaultValue
 	},
 	convertToOther<T>() {
-		return Failure<T>(err)
+		return Fail<T>(err)
 	},
 	match(handler) {
 		return handler.error(err)

@@ -1,7 +1,7 @@
-import { globSync } from 'glob'
 import { dirname, join } from 'node:path'
-import { objectValues } from '@mono/object-utils'
 import { fileURLToPath } from 'node:url'
+import { objectValues } from '@mono/object-utils'
+import { globSync } from 'glob'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 

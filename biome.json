@@ -1,0 +1,82 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.2/schema.json",
+	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"files": { "ignoreUnknown": false, "ignore": [] },
+	"formatter": {
+		"enabled": true,
+		"useEditorconfig": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineEnding": "lf",
+		"lineWidth": 80,
+		"attributePosition": "auto",
+		"bracketSpacing": true
+	},
+	"organizeImports": { "enabled": true },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false,
+			"complexity": {
+                "useOptionalChain": "error",
+                "useDateNow": "error",
+                "noVoid": "error",
+                "noUselessTernary": "error",
+                "noStaticOnlyClass": "error",
+                "noUselessEmptyExport": "error",
+                "noUselessConstructor": "error",
+                "noUselessCatch": "error",
+                "noThisInStatic": "error",
+				"noBannedTypes": "error",
+				"noUselessThisAlias": "error",
+				"noUselessTypeConstraint": "error",
+				"useArrowFunction": "off",
+				"useRegexLiterals": "error"
+			},
+			"correctness": {
+                "noUnusedImports": "error",
+                "noUnusedFunctionParameters": "error",
+                "noEmptyPattern": "error",
+                "noConstantCondition": "error",
+				"noPrecisionLoss": "error",
+				"noUnusedVariables": "error",
+				"useArrayLiterals": "off"
+			},
+			"style": {
+                "useWhile": "error",
+                "useNodejsImportProtocol": "error",
+                "useForOf": "error",
+				"noNamespace": "error",
+				"noNonNullAssertion": "off",
+				"noUselessElse": "warn",
+				"noVar": "error",
+				"useAsConstAssertion": "error",
+				"useBlockStatements": "off",
+				"useConst": "error"
+			},
+			"suspicious": {
+                "useIsArray": "error",
+				"noExplicitAny": "off",
+				"noExtraNonNullAssertion": "error",
+				"noMisleadingInstantiator": "error",
+				"noUnsafeDeclarationMerging": "error",
+                "useValidTypeof": "error"
+			}
+		},
+		"ignore": ["**/.eslintrc.js"]
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "all",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"quoteStyle": "single",
+			"attributePosition": "auto",
+			"bracketSpacing": true
+		}
+	}
+}

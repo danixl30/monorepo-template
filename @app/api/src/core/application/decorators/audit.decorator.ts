@@ -1,7 +1,7 @@
-import { ApplicationService } from '../service/application.service'
-import { AuditingRepository } from '../auditing/repository/audit.repository'
 import { isNotNull } from '../../../utils/null-manager/null-checker'
 import { AuditingDto } from '../auditing/dto/dto'
+import { AuditingRepository } from '../auditing/repository/audit.repository'
+import { ApplicationService } from '../service/application.service'
 
 export const auditDecorator =
 	<T, R>(
@@ -10,18 +10,14 @@ export const auditDecorator =
 		dto: AuditingDto,
 	): ApplicationService<T, R> =>
 	async (data) => {
-		try {
-			const result = await service(data)
-			dto.ocurredOn = new Date(Date.now())
-			dto.succes = !result.isError()
-			if (result.isError()) {
-				auditter.saveAudit(dto)
-			}
-			if (!result.isError() && isNotNull(result.unwrap())) {
-				auditter.saveAudit(dto)
-			}
-			return result
-		} catch (error) {
-			throw error
+		const result = await service(data)
+		dto.ocurredOn = new Date()
+		dto.succes = !result.isError()
+		if (result.isError()) {
+			auditter.saveAudit(dto)
 		}
+		if (!result.isError() && isNotNull(result.unwrap())) {
+			auditter.saveAudit(dto)
+		}
+		return result
 	}

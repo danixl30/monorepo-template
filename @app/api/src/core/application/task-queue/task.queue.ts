@@ -1,3 +1,1 @@
-export interface TaskQueue {
-	add(task: () => void | Promise<void>): void
-}
+export type AddTask = (task: () => void | Promise<void>) => void

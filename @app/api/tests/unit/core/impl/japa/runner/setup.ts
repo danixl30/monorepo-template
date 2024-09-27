@@ -10,11 +10,11 @@ import { configure, processCLIArgs, run } from '@japa/runner'
 processCLIArgs(process.argv.splice(2))
 
 configure({
-    files: [
-        './dist_test/tests/unit/groups/**/**/group.tests.js',
-        './dist_test/tests/unit/features/**/feature.js',
-    ],
-    plugins: [expect()],
+	files: [
+		'./dist_test/tests/unit/groups/**/**/group.tests.js',
+		'./dist_test/tests/unit/features/**/feature.js',
+	],
+	plugins: [expect()],
 })
 
 run()

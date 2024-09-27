@@ -10,7 +10,7 @@
     "start:prod": "pnpm --recursive --parallel --stream run start:prod",
     "lint": "pnpm --recursive --parallel --stream run lint",
     "commit": "sui-mono commit",
-    "format": "prettier --write \"**/**/src/**/*.{ts,tsx}\" \"**/**/lib/**/*.{ts,tsx}\" \"**/**/test/**/**/*.ts\"",
+    "format": "pnpm --recursive --parallel --stream run format",
     "prepare-commithooks": "husky install",
     "test:unit": "pnpm --recursive --parallel --stream run test:unit",
     "test:e2e": "pnpm --recursive --parallel --stream run test:e2e",
@@ -21,6 +21,7 @@
   "author": "danixl30",
   "license": "ISC",
   "devDependencies": {
+    "@biomejs/biome": "^1.9.2",
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
     "@japa/expect": "^3.0.2",

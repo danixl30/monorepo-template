@@ -1,4 +1,4 @@
 export type DataToTest = {
-    name: string
-    count: number
+	name: string
+	count: number
 }

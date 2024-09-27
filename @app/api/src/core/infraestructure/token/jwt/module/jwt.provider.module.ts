@@ -1,6 +1,6 @@
 import { JwtModule } from '@nestjs/jwt'
-import { JwtProviderService } from '../service/jwt.provider.service'
 import { ServiceModule } from 'src/core/infraestructure/decorators/service.module'
+import { JwtProviderService } from '../service/jwt.provider.service'
 
 export const JWT_PROVIDER_TOKEN = 'JWT_PROVIDER_TOKEN'
 

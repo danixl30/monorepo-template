@@ -1,9 +1,12 @@
+import { ValueObject } from 'src/core/domain/value-objects/value.object'
 import { OrderField } from './order.field'
 import { OrderType } from './order.type'
-import { ValueObject } from 'src/core/domain/value-objects/value.object'
 
 export class Order implements ValueObject<Order> {
-	constructor(private _field: OrderField, private _type: OrderType) {
+	constructor(
+		private _field: OrderField,
+		private _type: OrderType,
+	) {
 		if (!this.field || !this.type) throw new Error('Invalid order')
 	}
 

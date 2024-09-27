@@ -1,6 +1,6 @@
-import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
+import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
 export const loadDependencies = () => {

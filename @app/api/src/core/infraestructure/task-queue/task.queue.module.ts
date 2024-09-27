@@ -1,5 +1,5 @@
-import { AsyncLimiterTaskQueue } from './service/async.limiter.task.queue'
 import { ServiceModule } from '../decorators/service.module'
+import { AsyncLimiterTaskQueue } from './service/async.limiter.task.queue'
 
 export const NATIVE_TASK_QUEUE = 'NATIVE_TASK_QUEUE'
 

@@ -1,8 +1,8 @@
-import { initializeTests } from './loader'
+import { scenarioDeclare } from '../common/scenario-parser'
+import { nodeTestingFeatureDeclare } from './declaration/feature.declaration'
 import { nodeTestSuitDeclartion } from './declaration/test.declaration'
 import { nodeTestingExpectation } from './expectation/expectatation'
-import { nodeTestingFeatureDeclare } from './declaration/feature.declaration'
-import { scenarioDeclare } from '../common/scenario-parser'
+import { initializeTests } from './loader'
 
 export const declareGroup = nodeTestSuitDeclartion
 export const lookFor = nodeTestingExpectation

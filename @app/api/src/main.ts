@@ -5,6 +5,7 @@ import '@mono/number-methods'
 import '@mono/object-utils'
 import '@mono/date-methods'
 import '@mono/boolean-methods'
+import '@mono/map-methods'
 import bootstrap from './core/infraestructure/server/bootstrap'
 
 await bootstrap()

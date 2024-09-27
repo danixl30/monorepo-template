@@ -1,5 +1,5 @@
-import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
 import { TypeClass } from '@mono/types-utils'
+import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
 
 export function ApplicationModule(
 	dependencies?: (

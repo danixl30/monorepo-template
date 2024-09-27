@@ -1,6 +1,6 @@
 import { AppModule } from '../application-module/app.module'
-import { PORT } from './port/port'
 import { ServerBuilder } from './builder/server.builder'
+import { PORT } from './port/port'
 import { runServer } from './run/run.server'
 
 export default async function bootstrap() {

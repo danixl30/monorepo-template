@@ -1,6 +1,6 @@
 import { ComparationUtils as C, match } from '@mono/pattern-matching'
 import { makeApplicationErrorFactory } from '../../../../../../src/core/application/error/application.error'
-import { Failure } from '../../../../../../src/core/application/result-handler/result.handler'
+import { Fail } from '../../../../../../src/core/application/result-handler/result.handler'
 
 export const name = 'firstTest'
 export const body = () => {
@@ -29,5 +29,5 @@ export const body = () => {
 		message: 'test',
 		name: 'error1',
 	})
-	Failure(errorTest())
+	Fail(errorTest())
 }

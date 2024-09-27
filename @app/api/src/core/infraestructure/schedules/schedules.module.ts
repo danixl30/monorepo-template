@@ -1,8 +1,8 @@
-import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
-import { BarrelModule } from '../decorators/barrel.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { globSync } from 'glob'
+import { BarrelModule } from '../decorators/barrel.module'
 
 const initializeModules = () => {
 	const data = globSync(

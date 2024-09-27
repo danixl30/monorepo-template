@@ -1,6 +1,6 @@
-import { globSync } from 'glob'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
+import { globSync } from 'glob'
 
 export const initializeControllers = (currentPath: string) => {
 	const data = globSync(

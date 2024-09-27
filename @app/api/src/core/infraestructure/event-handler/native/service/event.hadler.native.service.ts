@@ -1,5 +1,5 @@
-import { EventHandler } from 'src/core/application/event-handler/event.handler'
 import { Injectable } from '@nestjs/common'
+import { EventHandler } from 'src/core/application/event-handler/event.handler'
 import { Subscription } from 'src/core/application/event-handler/subscription'
 import {
 	DomainEventBase,

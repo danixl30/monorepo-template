@@ -1,3 +1,1 @@
-export interface IDGenerator<T> {
-	generate(): T
-}
+export type IDGenerator<T> = () => T

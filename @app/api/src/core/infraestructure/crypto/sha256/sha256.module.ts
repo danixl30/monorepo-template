@@ -1,5 +1,5 @@
-import { Sha256Service } from './service/sha256.service'
 import { ServiceModule } from '../../decorators/service.module'
+import { Sha256Service } from './service/sha256.service'
 
 export const SHA256_CRYPTO = 'SHA256_CRYPTO'
 

@@ -1,10 +1,10 @@
+import { TypeClass } from '@mono/types-utils'
 import {
 	DynamicModule,
 	ForwardReference,
 	Module,
 	Provider,
 } from '@nestjs/common'
-import { TypeClass } from '@mono/types-utils'
 
 export function ServiceModule(
 	services: Provider[],

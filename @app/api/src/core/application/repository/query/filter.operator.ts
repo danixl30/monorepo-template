@@ -1,5 +1,5 @@
-import { Operator } from './operator'
 import { ValueObject } from 'src/core/domain/value-objects/value.object'
+import { Operator } from './operator'
 
 export class FilterOperator implements ValueObject<FilterOperator> {
 	constructor(private operator: Operator) {}

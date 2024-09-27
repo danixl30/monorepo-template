@@ -1,5 +1,5 @@
-import { OrderTypes } from './order.types'
 import { ValueObject } from 'src/core/domain/value-objects/value.object'
+import { OrderTypes } from './order.types'
 
 export class OrderType implements ValueObject<OrderType> {
 	constructor(private orderType: OrderTypes) {}
