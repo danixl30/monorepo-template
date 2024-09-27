@@ -626,18 +626,16 @@ function compile(): void {
 		if (parsedCmd?.options.outDir && tsConfigParsed.tscc?.deleteOutDir) {
 			rimrafSync(parsedCmd.options.outDir)
 		}
-		const host = createCompilerHost(
-			{
-				...parsedCmd?.options,
-				allowImportingTsExtensions: false,
-			} || CJS_CONFIG,
-		)
+		const host = createCompilerHost({
+			...parsedCmd?.options,
+			allowImportingTsExtensions: false,
+		})
 		const program = ts.createProgram(
 			parsedCmd?.fileNames || [],
 			{
 				...parsedCmd?.options,
 				allowImportingTsExtensions: false,
-			} || CJS_CONFIG,
+			},
 			host,
 		)
 		const visitorsBefore = [
