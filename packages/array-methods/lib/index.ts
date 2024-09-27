@@ -234,6 +234,11 @@ declare global {
 		toReversed(): T[]
 		toSorted(callback: (a: T, b: T) => number): T[]
 		toSpliced(start: number, elementCount?: number, ...items: T[]): T[]
+		/**
+		 *
+		 * Checks if index is in range of the array
+		 */
+		isIndexInArray(index: number): boolean
 	}
 
 	interface Array<T extends number | string> {
@@ -258,6 +263,10 @@ declare global {
 	interface ArrayConstructor {
 		range(start: number, end: number, stepBy?: number): number[]
 	}
+}
+
+Array.prototype.isIndexInArray = function (this: any[], index) {
+	return index >= 0 && index < this.length
 }
 
 if (typeof Array.prototype.uniqueBy !== 'function')

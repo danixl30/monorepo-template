@@ -48,7 +48,16 @@ declare global {
 		get last(): string
 		pop(n?: number): string
 		shift(n?: number): string
+		/**
+		 *
+		 * Checks if index is in range of the string
+		 */
+		isIndexInString(index: number): boolean
 	}
+}
+
+String.prototype.isIndexInString = function (this: string, index) {
+	return index >= 0 && index < this.length
 }
 
 if (!String.prototype.pop)
