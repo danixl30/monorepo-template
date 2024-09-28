@@ -1,15 +1,15 @@
+import { join } from 'node:path'
+import { objectValues } from '@mono/object-utils'
+import { TypeClass } from '@mono/types-utils'
 import {
 	DynamicModule,
 	ForwardReference,
 	Module,
 	Controller as NestController,
 } from '@nestjs/common'
-import { globSync } from 'glob'
-import { join } from 'node:path'
-import { objectValues } from '@mono/object-utils'
-import { TypeClass } from '@mono/types-utils'
-import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { globSync } from 'glob'
+import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
 const initializeControllers = (currentPath: string) => {
 	const data = globSync(
