@@ -110,6 +110,13 @@ declare global {
 		 * If promise contains an array you can apply count derectly
 		 */
 		count(callback: CallBackFilter<UnwrapArray<T>>): Promise<number>
+		/**
+		 *
+		 * Destructure promise to extract error and data [error, data]
+		 */
+		destructurePromise<E = any>(): Promise<
+			[error: E, undefined] | [undefined, data: T]
+		>
 	}
 	interface PromiseConstructor {
 		withResolvers<T>(): {
@@ -308,5 +315,14 @@ if (!Promise.try)
 
 if (!Promise.isPromise)
 	Promise.isPromise = <T>(v: any): v is Promise<T> => v instanceof Promise
+
+Promise.prototype.destructurePromise = async function (this: Promise<any>) {
+	try {
+		const data = await this
+		return [undefined, data]
+	} catch (e) {
+		return [e, undefined]
+	}
+}
 
 export default null
