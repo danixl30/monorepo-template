@@ -6,10 +6,10 @@ export const exceptionDecorator =
 		reductor: (e: Error) => void,
 	): ApplicationService<T, U> =>
 	async (data) => {
-		try {
-			return service(data)
-		} catch (e) {
-			reductor(e)
-			throw e
+		const [error, res] = await service(data).destructurePromise()
+		if (error) {
+			reductor(error)
+			throw error
 		}
+		return res!
 	}

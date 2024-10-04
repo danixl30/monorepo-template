@@ -10,18 +10,17 @@ import { invalidTokenError } from './errors/invalid.token'
 
 class JwtServiceManager<T extends object> implements TokenProvider<T> {
 	constructor(private jwtService: JwtService) {}
-	sign(value: T): Result<string> {
+	async sign(value: T): Promise<Result<string>> {
 		const token = this.jwtService.sign(value)
 		return Ok(token)
 	}
 
-	verify(value: string): Result<T> {
-		try {
-			const data = this.jwtService.verify<T>(value)
-			return Ok(data)
-		} catch (_error) {
-			return Fail(invalidTokenError())
-		}
+	async verify(value: string): Promise<Result<T>> {
+		const [error, data] = await Promise.try(() =>
+			this.jwtService.verify<T>(value),
+		).destructurePromise()
+		if (error || !data) return Fail(invalidTokenError())
+		return Ok(data)
 	}
 }
 

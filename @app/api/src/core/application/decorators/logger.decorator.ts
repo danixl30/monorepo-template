@@ -8,16 +8,15 @@ export const loggerDecorator =
 		logger: LoggerContract,
 	): ApplicationService<T, R> =>
 	async (data) => {
-		try {
-			logger.log('INPUT:', JSON.stringify(data))
-			const result = await service(data)
-			if (result.isError())
-				logger.error(JSON.stringify(result.handleError((e) => e)))
-			if (!result.isError() && isNotNull(result.unwrap()))
-				logger.log('RESULT:', JSON.stringify(result.unwrap()))
-			return result
-		} catch (error) {
+		logger.log('INPUT:', JSON.stringify(data))
+		const [error, result] = await service(data).destructurePromise()
+		if (error || !result) {
 			logger.exception(JSON.stringify(error))
 			throw error
 		}
+		if (result.isError())
+			logger.error(JSON.stringify(result.handleError((e) => e)))
+		if (!result.isError() && isNotNull(result.unwrap()))
+			logger.log('RESULT:', JSON.stringify(result.unwrap()))
+		return result
 	}

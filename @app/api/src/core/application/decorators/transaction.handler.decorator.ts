@@ -7,16 +7,15 @@ export const transactionHandler =
 		transactionHandler: TransactionHandler,
 	): ApplicationService<T, U> =>
 	async (data) => {
-		try {
-			const result = await service(data)
-			if (result.isError()) {
-				await transactionHandler.cancel()
-			} else {
-				await transactionHandler.commit()
-			}
-			return result
-		} catch (e) {
+		const [error, result] = await service(data).destructurePromise()
+		if (error) {
 			await transactionHandler.cancel()
-			throw e
+			throw error
 		}
+		if (result!.isError()) {
+			await transactionHandler.cancel()
+		} else {
+			await transactionHandler.commit()
+		}
+		return result!
 	}
