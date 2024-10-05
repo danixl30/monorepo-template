@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { EventHandler } from 'src/core/application/event-handler/event.handler'
-import { Subscription } from 'src/core/application/event-handler/subscription'
-import {
-	DomainEventBase,
-	DomainEventRecord,
-} from 'src/core/domain/events/event'
+import { Unsubscribe } from 'src/core/application/event-handler/subscription'
+import { DomainEventBase } from 'src/core/domain/events/event'
 
 @Injectable()
 export class EventHandlerNative implements EventHandler {
@@ -13,22 +10,19 @@ export class EventHandlerNative implements EventHandler {
 	} = {}
 	publish(events: DomainEventBase[]): void {
 		events.forEach((event) =>
-			this.#subscribers[event.name]?.forEach((sub) => sub(event)),
+			this.#subscribers[event.eventName]?.forEach((sub) => sub(event)),
 		)
 	}
 
-	subscribe<T extends keyof DomainEventRecord>(
-		name: T,
-		callback: (event: DomainEventRecord[T]) => Promise<void>,
-	): Subscription {
+	subscribe(
+		name: string,
+		callback: (event: DomainEventBase) => Promise<void>,
+	): Unsubscribe {
 		if (!this.#subscribers[name]) this.#subscribers[name] = []
 		this.#subscribers[name].push(callback)
-		return {
-			unsubscribe: () => {
-				this.#subscribers[name] = this.#subscribers[name].filter(
-					(e) => e !== callback,
-				)
-			},
-		}
+		return () =>
+			(this.#subscribers[name] = this.#subscribers[name].filter(
+				(e) => e !== callback,
+			))
 	}
 }

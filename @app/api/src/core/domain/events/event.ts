@@ -1,9 +1,7 @@
-export interface DomainEventRecord {}
-
 type EventBase = object
 
 export type DomainEventBase = {
-	name: string
+	eventName: string
 	timestamp: Date
 }
 
@@ -16,19 +14,17 @@ export type DomainEventInstance<T extends EventBase> = {
 	readonly timestamp: Date
 }
 
-export function domainEventFactory<T extends EventBase>(name: string) {
+export function domainEventFactory<T extends EventBase>(eventName: string) {
 	return (
 		data: T & {
 			timestamp?: Date
 		},
-	): DomainEventInstance<
-		T & {
-			name: string
-			timestamp: Date
-		}
-	> => ({
-		name,
+	): DomainEventInstance<T & DomainEventBase> => ({
+		eventName,
 		timestamp: data.timestamp ?? new Date(),
 		...data,
 	})
 }
+
+export type UnwrapEventType<T extends (data: any) => DomainEventInstance<any>> =
+	T extends (data: any) => infer U ? U : never

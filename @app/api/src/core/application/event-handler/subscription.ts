@@ -1,3 +1,1 @@
-export interface Subscription {
-	unsubscribe(): void
-}
+export type Unsubscribe = () => void

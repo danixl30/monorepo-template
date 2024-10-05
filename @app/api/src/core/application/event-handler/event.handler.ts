@@ -1,15 +1,12 @@
-import {
-	DomainEventBase,
-	DomainEventRecord,
-} from 'src/core/domain/events/event'
-import { Subscription } from './subscription'
+import { DomainEventBase } from 'src/core/domain/events/event'
+import { Unsubscribe } from './subscription'
 
 export interface EventHandler {
 	publish(events: DomainEventBase[]): void
-	subscribe<T extends keyof DomainEventRecord>(
-		name: T,
-		callback: (event: DomainEventRecord[T]) => Promise<void>,
-	): Subscription
+	subscribe(
+		name: string,
+		callback: (event: DomainEventBase) => Promise<void>,
+	): Unsubscribe
 }
 
 export interface EventPublisher {
@@ -20,5 +17,5 @@ export interface EventListener {
 	subscribe<T extends DomainEventBase>(
 		name: T,
 		callback: (event: T) => Promise<void>,
-	): Subscription
+	): Unsubscribe
 }

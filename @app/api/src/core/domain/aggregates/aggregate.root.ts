@@ -18,10 +18,18 @@ export abstract class AggregateRoot<
 		this.events.push(event)
 	}
 
+	protected hydratate(...events: DomainEventBase[]) {
+		events.forEach((event) => {
+			this[`on:${event.eventName}`](event)
+			this.validateState()
+		})
+	}
+
 	protected apply(...events: DomainEventBase[]) {
 		events.forEach((event) => {
-			this[`on:${event.name}`](event)
+			this[`on:${event.eventName}`](event)
 			this.validateState()
+			events.push(event)
 		})
 	}
 
