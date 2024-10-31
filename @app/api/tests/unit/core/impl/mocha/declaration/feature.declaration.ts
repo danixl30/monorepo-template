@@ -1,6 +1,6 @@
+import { globSync } from 'node:fs'
 import { join } from 'node:path'
 import { Scenario } from '@mono/test-utils'
-import { globSync } from 'node:fs'
 import { after, afterEach, before, beforeEach, describe, it } from 'mocha'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import {

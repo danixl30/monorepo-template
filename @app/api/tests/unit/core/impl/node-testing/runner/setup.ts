@@ -4,8 +4,8 @@ import '@mono/string-methods'
 import '@mono/number-methods'
 import '@mono/object-utils'
 import '@mono/date-methods'
-import { join } from 'node:path'
 import { globSync } from 'node:fs'
+import { join } from 'node:path'
 
 const importTestSuits = () => {
 	const data = [

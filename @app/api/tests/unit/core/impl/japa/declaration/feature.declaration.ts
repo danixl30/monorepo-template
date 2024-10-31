@@ -1,3 +1,4 @@
+import { globSync } from 'node:fs'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { Scenario } from '@mono/test-utils'
@@ -6,7 +7,6 @@ import {
 	parseFeatures,
 	scenariosInputParser,
 } from '../../common/gherkin-parser'
-import { globSync } from 'node:fs'
 
 export const japaFeatureDeclare = async (
 	name: string,

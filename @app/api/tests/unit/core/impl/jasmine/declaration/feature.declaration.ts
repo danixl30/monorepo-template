@@ -1,12 +1,12 @@
 import { join } from 'node:path'
 import { Scenario } from '@mono/test-utils'
 import 'jasmine'
+import { globSync } from 'node:fs'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import {
 	parseFeatures,
 	scenariosInputParser,
 } from '../../common/gherkin-parser'
-import { globSync } from 'node:fs'
 
 export const jasmineFeatureDeclare = async (
 	name: string,
