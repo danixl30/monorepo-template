@@ -1,3 +1,4 @@
+import { glob } from 'node:fs/promises'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
@@ -8,14 +9,15 @@ import {
 	Controller as NestController,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
-import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
-const initializeControllers = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, '../../controllers/**/*.controller.js').replace(
-			/\\/g,
-			'/',
+const initializeControllers = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, '../../controllers/**/*.controller.js').replace(
+				/\\/g,
+				'/',
+			),
 		),
 	)
 	return data.asyncMap(async (e) => {
@@ -24,15 +26,17 @@ const initializeControllers = (currentPath: string) => {
 	})
 }
 
-const initializeVersionedControllers = (
+const initializeVersionedControllers = async (
 	currentPath: string,
 	version: string,
 ) => {
-	const data = globSync(
-		join(
-			currentPath,
-			`../../controllers/${version}/**/*.controller.js`,
-		).replace(/\\/g, '/'),
+	const data = await Array.fromAsync(
+		glob(
+			join(
+				currentPath,
+				`../../controllers/${version}/**/*.controller.js`,
+			).replace(/\\/g, '/'),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)
@@ -40,9 +44,14 @@ const initializeVersionedControllers = (
 	})
 }
 
-const initializeServices = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
+const initializeServices = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, '../../services/**/*.service.js').replace(
+				/\\/g,
+				'/',
+			),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)
@@ -50,9 +59,14 @@ const initializeServices = (currentPath: string) => {
 	})
 }
 
-export const loadDependencies = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
+export const loadDependencies = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, './dependencies/*.dependency.js').replace(
+				/\\/g,
+				'/',
+			),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)

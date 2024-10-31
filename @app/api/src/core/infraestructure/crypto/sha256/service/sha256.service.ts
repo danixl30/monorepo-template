@@ -1,14 +1,16 @@
+import { createHash } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
-import { sha256 } from 'js-sha256'
 import { Crypto } from 'src/core/application/crypto/crypto'
+
+const hasher = createHash('sha256')
 
 @Injectable()
 export class Sha256Service implements Crypto {
 	async encrypt(value: string): Promise<string> {
-		return sha256(value)
+		return hasher.update(value).digest('hex')
 	}
 
 	async compare(normal: string, encrypted: string): Promise<boolean> {
-		return sha256(normal) === encrypted
+		return hasher.update(normal).digest('hex') === encrypted
 	}
 }

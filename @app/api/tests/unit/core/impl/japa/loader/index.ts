@@ -1,5 +1,5 @@
+import { globSync } from 'node:fs'
 import { join } from 'node:path'
-import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
 export const initializeTests = () => {

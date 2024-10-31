@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { test } from 'node:test'
 import { objectValues } from '@mono/object-utils'
 import { SuitDeclaration } from '@mono/test-utils'
-import { globSync } from 'glob'
+import { globSync } from 'node:fs'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
 const importHook = async (e: string) => {

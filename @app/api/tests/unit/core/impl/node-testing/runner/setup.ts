@@ -5,7 +5,7 @@ import '@mono/number-methods'
 import '@mono/object-utils'
 import '@mono/date-methods'
 import { join } from 'node:path'
-import { globSync } from 'glob'
+import { globSync } from 'node:fs'
 
 const importTestSuits = () => {
 	const data = [

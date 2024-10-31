@@ -2,8 +2,8 @@ import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { objectValues } from '@mono/object-utils'
 import { SuitDeclaration } from '@mono/test-utils'
-import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
+import { globSync } from 'node:fs'
 
 const importHook = async (e: string) => {
 	const module = await import('file:///' + e)

@@ -1,15 +1,17 @@
+import { glob } from 'node:fs/promises'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
-import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 
-export const initializeResolvers = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, '../../resolvers/**/*.resolver.js').replace(
-			/\\/g,
-			'/',
+export const initializeResolvers = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, '../../resolvers/**/*.resolver.js').replace(
+				/\\/g,
+				'/',
+			),
 		),
 	)
 	return data.asyncMap(async (e) => {
@@ -18,9 +20,14 @@ export const initializeResolvers = (currentPath: string) => {
 	})
 }
 
-const initializeServices = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, '../../services/**/*.service.js').replace(/\\/g, '/'),
+const initializeServices = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, '../../services/**/*.service.js').replace(
+				/\\/g,
+				'/',
+			),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)
@@ -28,9 +35,14 @@ const initializeServices = (currentPath: string) => {
 	})
 }
 
-export const loadDependencies = (currentPath: string) => {
-	const data = globSync(
-		join(currentPath, './dependencies/*.dependency.js').replace(/\\/g, '/'),
+export const loadDependencies = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(currentPath, './dependencies/*.dependency.js').replace(
+				/\\/g,
+				'/',
+			),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)

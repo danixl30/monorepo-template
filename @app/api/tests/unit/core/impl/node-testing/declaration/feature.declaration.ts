@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { after, afterEach, before, beforeEach, describe, it } from 'node:test'
 import { Scenario } from '@mono/test-utils'
-import { globSync } from 'glob'
+import { globSync } from 'node:fs'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import {
 	parseFeatures,

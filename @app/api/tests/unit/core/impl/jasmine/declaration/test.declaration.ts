@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { SuitDeclaration, TestDeclaration } from '@mono/test-utils'
-import { globSync } from 'glob'
+import { globSync } from 'node:fs'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import 'jasmine'
 

@@ -1,15 +1,17 @@
+import { glob } from 'node:fs/promises'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { ScheduleModule } from '@nestjs/schedule'
-import { globSync } from 'glob'
 import { BarrelModule } from '../decorators/barrel.module'
 
-const initializeModules = () => {
-	const data = globSync(
-		join(
-			__dirname,
-			'../../../**/infraestructure/modules/schedules/module.js',
-		).replace(/\\/g, '/'),
+const initializeModules = async () => {
+	const data = await Array.fromAsync(
+		glob(
+			join(
+				__dirname,
+				'../../../**/infraestructure/modules/schedules/module.js',
+			).replace(/\\/g, '/'),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)

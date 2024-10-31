@@ -1,16 +1,15 @@
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { glob } from 'node:fs/promises'
+import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
-import { globSync } from 'glob'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-export const initializeModels = (prefix: string, folder: string) => {
-	const data = globSync(
-		join(
-			__dirname,
-			`../../../../**/infraestructure/models/${folder}/*.${prefix}.js`,
-		).replace(/\\/g, '/'),
+export const initializeModels = async (prefix: string, folder: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(
+				__dirname,
+				`../../../../**/infraestructure/models/${folder}/*.${prefix}.js`,
+			).replace(/\\/g, '/'),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)

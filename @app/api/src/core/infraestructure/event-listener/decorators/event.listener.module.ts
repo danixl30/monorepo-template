@@ -1,17 +1,19 @@
+import { glob } from 'node:fs/promises'
 import { join } from 'node:path'
 import { objectValues } from '@mono/object-utils'
 import { TypeClass } from '@mono/types-utils'
 import { DynamicModule, ForwardReference, Module } from '@nestjs/common'
-import { globSync } from 'glob'
 import { getCallStack } from 'src/utils/call-stack/get.call.stack'
 import { loadDependencies } from '../../controllers/decorators/controller.module'
 
-const initializeEventListeners = (currentPath: string) => {
-	const data = globSync(
-		join(
-			currentPath,
-			'../../event-listeners/**/*.event.listener.js',
-		).replace(/\\/g, '/'),
+const initializeEventListeners = async (currentPath: string) => {
+	const data = await Array.fromAsync(
+		glob(
+			join(
+				currentPath,
+				'../../event-listeners/**/*.event.listener.js',
+			).replace(/\\/g, '/'),
+		),
 	)
 	return data.asyncMap(async (e) => {
 		const module = await import('file:///' + e)
