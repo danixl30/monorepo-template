@@ -22,7 +22,6 @@
     "dependencies-graph": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "imports": {
-    "#corejest": "./dist_test/tests/unit/core/impl/jest/index.js",
     "#coremocha": "./dist_test/tests/unit/core/impl/mocha/index.js",
     "#corejapa": "./dist_test/tests/unit/core/impl/japa/index.js",
     "#corevitest": "./dist_test/tests/unit/core/impl/vitest/index.js",

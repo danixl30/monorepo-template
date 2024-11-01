@@ -13,6 +13,11 @@ $ nvm install $(Get-Content .nvmrc).replace( 'v', '' )
 $ nvm install
 ```
 
+## node installation by fnm
+```bash
+$ fnm use
+```
+
 ## pnpm installation 
 ```bash
 # enable corepack
