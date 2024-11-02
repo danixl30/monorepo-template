@@ -1,9 +1,19 @@
+import { getCallSite } from "node:util";
+
+declare module 'node:util' {
+    export function getCallSite(frames?: number): {
+        fuctionName: string
+        scriptName: string
+        lineNumber: number
+        column: number
+    }[]
+}
+
 export const getCallStack = (): string[] => {
-	const _pst = Error.prepareStackTrace
-	Error.prepareStackTrace = (_err, stack) =>
-		stack.map((e) => e.getFileName()?.replace('file:///', ''))
-	const err: any = new Error()
-	err.stack.shift()
-	Error.prepareStackTrace = _pst
-	return err.stack.map((e) => (process.platform !== 'win32' ? '/' + e : e))
+    const callSatck = getCallSite()
+    return callSatck
+        .map(e => e.scriptName)
+        .map((e) => e.replace('file:///', ''))
+        .map((e) => (process.platform !== 'win32' ? '/' + e : e))
+        .reverse()
 }
