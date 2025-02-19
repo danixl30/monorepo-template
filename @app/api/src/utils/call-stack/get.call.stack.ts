@@ -1,16 +1,7 @@
-import { getCallSite } from 'node:util'
-
-declare module 'node:util' {
-	export function getCallSite(frames?: number): {
-		fuctionName: string
-		scriptName: string
-		lineNumber: number
-		column: number
-	}[]
-}
+import { getCallSites } from 'node:util'
 
 export const getCallStack = (): string[] => {
-	const callSatck = getCallSite()
+	const callSatck = getCallSites()
 	return callSatck
 		.map((e) => e.scriptName)
 		.map((e) => e.replace('file:///', ''))

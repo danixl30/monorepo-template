@@ -30,7 +30,7 @@
     "@s-ui/mono": "^2.34.0",
     "@types/jasmine": "^5.1.4",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^22.8.6",
+    "@types/node": "^22.13.4",
     "concurrently": "^8.2.2",
     "dependency-cruiser": "^12.6.0",
     "graphviz": "^0.0.9",
